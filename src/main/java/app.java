@@ -161,10 +161,22 @@ public class app extends javax.swing.JFrame {
 
 		jToggleButton4.setText("Search");
 
-		jToggleButton5.setText("Register");
+		jToggleButton5.setText("Join");
 		jToggleButton5.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jToggleButton5ActionPerformed(evt);
+				jToggleButton5ActionPerformed(evt);				
+			}
+		});
+		
+		jToggleButton3.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jToggleButton3ActionPerformed(evt);				
+			}
+		});
+		
+		jToggleButton4.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jToggleButton4ActionPerformed(evt);
 			}
 		});
 
@@ -319,7 +331,18 @@ public class app extends javax.swing.JFrame {
 		config.BOOTSTRAP_IP = jTextField3.getText();
 		config.BOOTSTRAP_PORT = Integer.parseInt(jTextField4.getText());
 		// add registration code here
+		System.out.println("Add Registration and Leave code Here.......");
 	}// GEN-LAST:event_jToggleButton5ActionPerformed
+	
+	private void jToggleButton3ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jToggleButton5ActionPerformed
+		// add leave code here
+		System.out.println("Add Leave code Here.......");
+	}// GEN-LAST:event_jToggleButton3ActionPerformed
+	
+	private void jToggleButton4ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jToggleButton5ActionPerformed
+		// add search code here
+		System.out.println("Add Search code Here.......");
+	}// GEN-LAST:event_jToggleButton4ActionPerformed
 
 	private void jTextField6ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jTextField6ActionPerformed
 		// TODO add your handling code here:
