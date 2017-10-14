@@ -6,12 +6,13 @@
 package main.java;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Scanner;
 import javax.swing.AbstractListModel;
+
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -19,7 +20,9 @@ import javax.swing.AbstractListModel;
  */
 @SuppressWarnings("serial")
 public class app extends javax.swing.JFrame {
-
+	
+	final static private Logger logger = Logger.getLogger( app.class );
+	
 	/**
 	 * Creates new form app
 	 */
@@ -54,15 +57,15 @@ public class app extends javax.swing.JFrame {
 			// jComboBox1.setModel(new
 			// DefaultComboBoxModel(fileNames.toArray()));
 		} catch (NullPointerException e) {
-			e.printStackTrace();
+			logger.error(e);
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			logger.error(e);
 		} finally {
 			if (in != null) {
 				try {
 					in.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+					logger.error(e);
 				}
 			}
 		}
