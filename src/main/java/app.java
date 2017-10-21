@@ -5,10 +5,14 @@
  */
 package main.java;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Scanner;
 import javax.swing.AbstractListModel;
 
@@ -122,7 +126,7 @@ public class app extends javax.swing.JFrame {
 
 		jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-		jLabel1.setForeground(new java.awt.Color(0, 0, 102));
+		jLabel1.setForeground(new java.awt.Color(0, 102, 51));
 		jLabel1.setText("Distributed File Sharing System");
 
 		jLabel2.setText("Client Confiuration");
@@ -160,15 +164,35 @@ public class app extends javax.swing.JFrame {
 		jToggleButton3.setText("Leave");
 
 		jTextArea1.setColumns(20);
-		jTextArea1.setRows(5);
+        jTextArea1.setRows(5);
+        Font font1 = new Font("Tahoma", 0, 11);
+        //    Font font = new Font("Tahoma", 0 , 11);
+        jTextArea1.setFont(font1);
+        jTextArea1.setForeground(Color.GREEN);
+        jTextArea1.setBackground(Color.black);
+        jTextArea1.setEditable(false);
+        jTextArea1.setLineWrap(true);
+        jTextArea1.setWrapStyleWord(true);
 		jScrollPane2.setViewportView(jTextArea1);
 
 		jToggleButton4.setText("Search");
 
-		jToggleButton5.setText("Register");
+		jToggleButton5.setText("Join");
 		jToggleButton5.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				jToggleButton5ActionPerformed(evt);
+				jToggleButton5ActionPerformed(evt);				
+			}
+		});
+		
+		jToggleButton3.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jToggleButton3ActionPerformed(evt);				
+			}
+		});
+		
+		jToggleButton4.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				jToggleButton4ActionPerformed(evt);
 			}
 		});
 
@@ -323,7 +347,35 @@ public class app extends javax.swing.JFrame {
 		config.BOOTSTRAP_IP = jTextField3.getText();
 		config.BOOTSTRAP_PORT = Integer.parseInt(jTextField4.getText());
 		// add registration code here
+		System.out.println("Add Registration and Leave code Here.......");
+        final network net = new network();
+        Thread thread1 = new Thread() {
+            public void run() {
+                try {
+                    net.run();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        thread1.start();
+		jTextArea1.append(config.USERNAME + "> send REG [" + getTimeStamp() + "]\n");
+		jToggleButton5.setEnabled(false);
 	}// GEN-LAST:event_jToggleButton5ActionPerformed
+	
+	private String getTimeStamp() {
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
+    }
+	
+	private void jToggleButton3ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jToggleButton5ActionPerformed
+		// add leave code here
+		System.out.println("Add Leave code Here.......");
+	}// GEN-LAST:event_jToggleButton3ActionPerformed
+	
+	private void jToggleButton4ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jToggleButton5ActionPerformed
+		// add search code here
+		System.out.println("Add Search code Here.......");
+	}// GEN-LAST:event_jToggleButton4ActionPerformed
 
 	private void jTextField6ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jTextField6ActionPerformed
 		// TODO add your handling code here:
