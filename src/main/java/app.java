@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import javax.swing.AbstractListModel;
 
+import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
 /**
@@ -28,6 +29,9 @@ public class app extends javax.swing.JFrame {
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes", "resource" })
 	public app() {
+		
+		BasicConfigurator.configure();
+		
 		this.setTitle("Distributed File Sharing System");
 		initComponents();
 		InputStreamReader in = null;
