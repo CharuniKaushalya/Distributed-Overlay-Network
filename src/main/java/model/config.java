@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package main.java;
+package main.java.model;
 
 /**
  *
@@ -11,16 +11,16 @@ package main.java;
  */
 public class config {
 	// Current Node Details
-	static String IP = "127.0.0.1";
-	static int PORT = 5007;
-	static String USERNAME = "Test";
-	static int id = 0;
+    public static String IP = "127.0.0.1";
+    public static int PORT = 5007;
+    public static String USERNAME = "Test";
+    public static int id = 0;
 
 	// Bootstrap Server Details
-	static String BOOTSTRAP_IP = "127.0.0.1";
-	static int BOOTSTRAP_PORT = 55555;
+    public static String BOOTSTRAP_IP = "127.0.0.1";
+    public static int BOOTSTRAP_PORT = 55555;
 
-	static int noOfNodes = 1;
+    public static int noOfNodes = 1;
 	
 	//command
 	public static final String REG = "REG";

@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package main.java;
+package main.java.controller;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import main.java.model.config;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
