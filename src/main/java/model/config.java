@@ -5,11 +5,15 @@
  */
 package main.java.model;
 
+import main.java.view.app;
+
 /**
  *
  * @author Charuni
  */
 public class config {
+	
+	public static app APP;
 	// Current Node Details
     public static String IP = "127.0.0.1";
     public static int PORT = 5007;

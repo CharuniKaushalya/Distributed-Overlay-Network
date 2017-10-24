@@ -32,10 +32,12 @@ public class network extends Observable implements Observer {
 
     public network() {
         BasicConfigurator.configure();
+
     }
 
     public void run() throws IOException {
-
+    	
+        this.addObserver(config.APP);
         boolean done = true;
         while (true) {
             if (done) {
@@ -52,6 +54,7 @@ public class network extends Observable implements Observer {
                 String message = new String(data, 0, packet.getLength());
 
                 logger.info("receiving ; " + message);
+                	UpdateTheCMD(message);
                 receiver(message);
                 //    onResponseReceived(message,new Node(packet.getAddress().getHostName(),packet.getPort()));
 
@@ -80,10 +83,23 @@ public class network extends Observable implements Observer {
             logger.error(e);
         }
     }
+    
+    private void sender(String msg, Node node) {
+        String length_final = formatter.format(msg.length() + 5);
+        String msg_final = length_final + " " + msg;
+        try {
+            DatagramPacket packet = new DatagramPacket(msg_final.getBytes(), msg_final.getBytes().length,
+                    InetAddress.getByName(node.getIP_address()), node.getPort_no());
+            socket.send(packet);
+            sentMessages++;
+        } catch (IOException e) {
+            logger.error(e);
+        }
+    }
 
     //will be invoked when a response is received
     private void receiver(String message) {
-
+    	UpdateTheCMD(message);
         receivedMessages++;
         StringTokenizer tokenizer = new StringTokenizer(message, " ");
         String length = tokenizer.nextToken();
@@ -103,7 +119,7 @@ public class network extends Observable implements Observer {
 
 
                     Node node = new Node(ip, port);
-                    String msg = config.JOIN + " " + ip + " " + port;
+                    String msg = config.JOIN + " " + ip + " " + port + " " + config.USERNAME;
                     sender(msg);
                     addNeighbour(node);
                     break;
@@ -114,8 +130,8 @@ public class network extends Observable implements Observer {
                         String hostport = tokenizer.nextToken();
 
                         Node temp = new Node(host, Integer.parseInt(hostport));
-                        String joinMsg = config.JOIN + " " + host + " " + hostport;
-                        sender(joinMsg);
+                        String joinMsg = config.JOIN + " " + config.IP + " " + config.PORT;
+                        sender(joinMsg, temp);
                         addNeighbour(temp);
                     }
                     logger.info("registration is successful, 2 nodes' contacts are returned");
@@ -143,10 +159,13 @@ public class network extends Observable implements Observer {
             logger.info("Successfully unregistered this Node from the boostrap server");
 
         } else if (config.JOIN.equals(command)) {
-        	System.out.println("call join " + config.PORT);
-        	//addNeighbour(new Node(tokenizer.nextToken()));
+        	String ip = tokenizer.nextToken();
+            int port = Integer.parseInt(tokenizer.nextToken());
+            Node node = new Node(ip, port);
+            addNeighbour(node);
 
         } else if (config.JOINOK.equals(command)) {
+
 
         } else {
             unAnsweredMessages++;

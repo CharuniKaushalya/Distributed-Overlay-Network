@@ -429,6 +429,7 @@ public class app extends javax.swing.JFrame  implements Observer{
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 app configWindow = new app();
+                config.APP = configWindow;
 
                 configWindow.setVisible(true);
             }
@@ -466,7 +467,7 @@ public class app extends javax.swing.JFrame  implements Observer{
 	@Override
 	public void update(Observable arg0, Object arg) {
 		// TODO Auto-generated method stub
-		 jTextArea1.append(config.USERNAME + ((String) arg) + Utils.getTimeStamp() + "]\n");
+		 jTextArea1.append(config.USERNAME + "> " + ((String) arg) + " [" + Utils.getTimeStamp() + "]\n");
 		
 	}
 }
