@@ -5,9 +5,11 @@
  */
 package main.java.controller;
 
-import main.java.model.config;
 import main.java.model.Node;
-import main.java.view.app;
+import main.java.model.SearchQuery;
+import main.java.model.SearchResult;
+import main.java.model.config;
+
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
@@ -28,7 +30,17 @@ public class network extends Observable implements Observer {
     private DatagramSocket socket;
     private int receivedMessages, sentMessages, unAnsweredMessages;
     private DecimalFormat formatter = new DecimalFormat("0000");
+
+    final private MovieController movieController = MovieController.getInstance("../../resources/File Names.txt");
+
     private final List<Node> neighbours = new ArrayList<>();
+    private final List<SearchQuery> searchQueryList = new ArrayList<>();
+
+    private int noOfLocalResults = 0;
+    private String localQuerry = "";
+    private List<String> LocalQueries = new ArrayList<>();
+    private int queryPointer = 0;
+    private int noOfNodesInTheNetwork = 0;
 
     public network() {
         BasicConfigurator.configure();
@@ -67,6 +79,47 @@ public class network extends Observable implements Observer {
 
     public boolean leave() {
         String msg = config.UNREG + " " + config.IP + " " + config.PORT + " " + config.USERNAME;
+        sender(msg);
+        return true;
+    }
+
+    synchronized void startSearch(String queryText) {
+        noOfLocalResults = 0;
+        localQuerry = queryText;
+
+        SearchQuery query = new SearchQuery();
+//        query.setOriginNode(thisNode);
+        query.setQueryText(queryText);
+        query.setHops(0);
+//        query.setSenderNode(thisNode);
+        query.setTimestamp(System.currentTimeMillis());
+
+        searchQueryList.add(query);
+
+        List<String> movies = this.movieController.searchMovies(query.getQueryText());
+
+        SearchResult result = new SearchResult();
+//        result.setOrginNode(thisNode);
+        result.setMovies(movies);
+        result.setHops(0);
+        result.setTimestamp(query.getTimestamp());
+
+        for (Node peer : neighbours) {
+            searchRequest(peer, query);
+        }
+
+        searchResponce(query.getOriginNode(), result);
+
+    }
+
+    public boolean searchRequest(Node peer, SearchQuery query) {
+        String msg = config.SER + " " + peer.getIP_address() + " " + peer.getPort_no() + " " + query.getQueryText() + " " + query.getHops();
+        sender(msg);
+        return true;
+    }
+
+    public boolean searchResponce(Node originNode, SearchResult result) {
+        String msg = config.SEROK + " " + config.IP + " " + config.PORT + " " + config.USERNAME;
         sender(msg);
         return true;
     }

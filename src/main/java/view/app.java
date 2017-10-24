@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.swing.AbstractListModel;
 
+import main.java.controller.MovieController;
 import main.java.model.config;
 import main.java.controller.network;
 import main.java.controller.Utils;
@@ -28,6 +29,7 @@ public class app extends javax.swing.JFrame  implements Observer{
 
     final static private Logger logger = Logger.getLogger(app.class);
     final network net;
+    final private MovieController movieController = MovieController.getInstance("../../resources/File Names.txt");
 
     /**
      * Creates new form app
@@ -40,56 +42,24 @@ public class app extends javax.swing.JFrame  implements Observer{
 
         this.setTitle("Distributed File Sharing System");
         initComponents();
-        InputStreamReader in = null;
-        try {
-            in = new InputStreamReader(this.getClass().getResourceAsStream("../../resources/File Names.txt"), "UTF-8");
-            Scanner s = new Scanner(in).useDelimiter("\n");
-            final ArrayList<String> fileNames = new ArrayList<>();
-            while (s.hasNext()) {
-                fileNames.add(s.next());
-            }
 
-            Collections.shuffle(fileNames);
-
-            List<String> movies = new ArrayList<String>();
-
-            Random rand = new Random();
-            int num = rand.nextInt(3) + 3;
-            for (int i = 0; i < num; i++){
-                movies.add(fileNames.get(i));
-            }
-
-            final String[] list = new String[movies.size()];
-            for (int i = 0; i < movies.size(); i++) {
-                list[i] = movies.get(i);
-            }
-            jList1.setModel(new AbstractListModel() {
-                String[] strings = list;
-
-                public int getSize() {
-                    return strings.length;
-                }
-
-                public Object getElementAt(int i) {
-                    return strings[i];
-                }
-            });
-            jScrollPane1.setViewportView(jList1);
-            // jComboBox1.setModel(new
-            // DefaultComboBoxModel(fileNames.toArray()));
-        } catch (NullPointerException e) {
-            logger.error(e);
-        } catch (UnsupportedEncodingException e) {
-            logger.error(e);
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    logger.error(e);
-                }
-            }
+        List<String> movies = this.movieController.getNodeMovies();
+        final String[] list = new String[movies.size()];
+        for (int i = 0; i < movies.size(); i++) {
+            list[i] = movies.get(i);
         }
+        jList1.setModel(new AbstractListModel() {
+            String[] strings = list;
+
+            public int getSize() {
+                return strings.length;
+            }
+
+            public Object getElementAt(int i) {
+                return strings[i];
+            }
+        });
+        jScrollPane1.setViewportView(jList1);
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 24));
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12));
@@ -387,7 +357,9 @@ public class app extends javax.swing.JFrame  implements Observer{
 
     private void jToggleButton4ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jToggleButton5ActionPerformed
         // add search code here
+        String movie = jTextField5.getText().trim().replace(" ", "_");
         logger.info("Add Search code Here.......");
+
     }// GEN-LAST:event_jToggleButton4ActionPerformed
 
     private void jTextField6ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jTextField6ActionPerformed
@@ -401,7 +373,7 @@ public class app extends javax.swing.JFrame  implements Observer{
         /* Set the Nimbus look and feel */
         // <editor-fold defaultstate="collapsed" desc=" Look and feel setting
         // code (optional) ">
-		/*
+        /*
 		 * If Nimbus (introduced in Java SE 6) is not available, stay with the
 		 * default look and feel. For details see
 		 * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.
