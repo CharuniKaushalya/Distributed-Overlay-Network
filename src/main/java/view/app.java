@@ -16,6 +16,7 @@ import javax.swing.AbstractListModel;
 
 import main.java.model.config;
 import main.java.controller.network;
+import main.java.controller.Utils;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
@@ -23,7 +24,7 @@ import org.apache.log4j.Logger;
  * @author Charuni
  */
 @SuppressWarnings("serial")
-public class app extends javax.swing.JFrame {
+public class app extends javax.swing.JFrame  implements Observer{
 
     final static private Logger logger = Logger.getLogger(app.class);
     final network net;
@@ -370,19 +371,17 @@ public class app extends javax.swing.JFrame {
             }
         };
         thread1.start();
-        jTextArea1.append(config.USERNAME + "> send REG [" + getTimeStamp() + "]\n");
+        jTextArea1.append(config.USERNAME + "> send REG [" + Utils.getTimeStamp() + "]\n");
         jToggleButton5.setEnabled(false);
     }// GEN-LAST:event_jToggleButton5ActionPerformed
 
-    private String getTimeStamp() {
-        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
-    }
+    
 
     private void jToggleButton3ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jToggleButton5ActionPerformed
         // add leave code here
         logger.info("Add Leave code Here.......");
         net.leave();
-        jTextArea1.append(config.USERNAME + "> send UNREG [" + getTimeStamp() + "]\n");
+        jTextArea1.append(config.USERNAME + "> send UNREG [" + Utils.getTimeStamp() + "]\n");
         jToggleButton3.setEnabled(false);
     }// GEN-LAST:event_jToggleButton3ActionPerformed
 
@@ -463,4 +462,11 @@ public class app extends javax.swing.JFrame {
     private javax.swing.JToggleButton jToggleButton4;
     private javax.swing.JToggleButton jToggleButton5;
     // End of variables declaration//GEN-END:variables
+
+	@Override
+	public void update(Observable arg0, Object arg) {
+		// TODO Auto-generated method stub
+		 jTextArea1.append(config.USERNAME + ((String) arg) + Utils.getTimeStamp() + "]\n");
+		
+	}
 }

@@ -6,6 +6,7 @@
 package main.java.controller;
 
 import main.java.model.config;
+import main.java.model.Node;
 import main.java.view.app;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
@@ -20,13 +21,14 @@ import java.text.DecimalFormat;
 /**
  * @author Charuni
  */
-public class network {
+public class network extends Observable implements Observer {
 
     final static private Logger logger = Logger.getLogger(network.class);
 
     private DatagramSocket socket;
     private int receivedMessages, sentMessages, unAnsweredMessages;
     private DecimalFormat formatter = new DecimalFormat("0000");
+    private final List<Node> neighbours = new ArrayList<>();
 
     public network() {
         BasicConfigurator.configure();
@@ -95,12 +97,28 @@ public class network {
                     break;
 
                 case 1:
+                    logger.info("registration is successful, 1 nodes contacts is returned");
+                    String ip = tokenizer.nextToken();
+                    int port = Integer.parseInt(tokenizer.nextToken());
 
-                    logger.info("Case 1");
+
+                    Node node = new Node(ip, port);
+                    String msg = config.JOIN + " " + ip + " " + port;
+                    sender(msg);
+                    addNeighbour(node);
                     break;
 
                 case 2:
-                    logger.info("Case 2");
+                    for (int i = 0; i < no_nodes; i++) {
+                        String host = tokenizer.nextToken();
+                        String hostport = tokenizer.nextToken();
+
+                        Node temp = new Node(host, Integer.parseInt(hostport));
+                        String joinMsg = config.JOIN + " " + host + " " + hostport;
+                        sender(joinMsg);
+                        addNeighbour(temp);
+                    }
+                    logger.info("registration is successful, 2 nodes' contacts are returned");
                     break;
                 case 9996:
                     logger.info("Failed to register. BootstrapServer is full.");
@@ -124,9 +142,33 @@ public class network {
         } else if (config.UNROK.equals(command)) {
             logger.info("Successfully unregistered this Node from the boostrap server");
 
+        } else if (config.JOIN.equals(command)) {
+        	System.out.println("call join " + config.PORT);
+        	//addNeighbour(new Node(tokenizer.nextToken()));
+
+        } else if (config.JOINOK.equals(command)) {
+
         } else {
             unAnsweredMessages++;
         }
+    }
+    
+    private void addNeighbour(Node node) {
+        if (!neighbours.contains(node)) {
+            neighbours.add(node);
+        }
+    }
+
+	@Override
+	public void update(Observable o, Object arg) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public void UpdateTheCMD(String msg) {
+        setChanged();
+        notifyObservers(msg);
+        clearChanged();
     }
 
 
