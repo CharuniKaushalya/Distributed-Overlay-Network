@@ -30,7 +30,6 @@ public class network extends Observable implements Observer {
     private DatagramSocket socket;
     private int receivedMessages, sentMessages, unAnsweredMessages;
     private DecimalFormat formatter = new DecimalFormat("0000");
-    private final List<Node> neighbours = new ArrayList<>();
 
     final private MovieController movieController = MovieController.getInstance("../../resources/File Names.txt");
 
