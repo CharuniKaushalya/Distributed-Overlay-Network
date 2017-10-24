@@ -122,7 +122,7 @@ public class network {
             }
 
         } else if (config.UNROK.equals(command)) {
-            logger.info("Successfully unregistered this node from the boostrap server");
+            logger.info("Successfully unregistered this Node from the boostrap server");
 
         } else {
             unAnsweredMessages++;

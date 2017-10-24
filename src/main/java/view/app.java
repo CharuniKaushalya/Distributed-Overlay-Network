@@ -11,9 +11,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Scanner;
+import java.util.*;
 import javax.swing.AbstractListModel;
 
 import main.java.model.config;
@@ -43,15 +41,26 @@ public class app extends javax.swing.JFrame {
         initComponents();
         InputStreamReader in = null;
         try {
-            in = new InputStreamReader(this.getClass().getResourceAsStream("../resources/File Names.txt"), "UTF-8");
+            in = new InputStreamReader(this.getClass().getResourceAsStream("../../resources/File Names.txt"), "UTF-8");
             Scanner s = new Scanner(in).useDelimiter("\n");
             final ArrayList<String> fileNames = new ArrayList<>();
             while (s.hasNext()) {
                 fileNames.add(s.next());
             }
-            final String[] list = new String[fileNames.size()];
-            for (int i = 0; i < fileNames.size(); i++) {
-                list[i] = fileNames.get(i);
+
+            Collections.shuffle(fileNames);
+
+            List<String> movies = new ArrayList<String>();
+
+            Random rand = new Random();
+            int num = rand.nextInt(3) + 3;
+            for (int i = 0; i < num; i++){
+                movies.add(fileNames.get(i));
+            }
+
+            final String[] list = new String[movies.size()];
+            for (int i = 0; i < movies.size(); i++) {
+                list[i] = movies.get(i);
             }
             jList1.setModel(new AbstractListModel() {
                 String[] strings = list;
