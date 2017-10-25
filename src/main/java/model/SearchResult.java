@@ -12,6 +12,15 @@ public class SearchResult {
     private int hops;
     private long timestamp;
 
+    public SearchResult(Node orginNode, List<String> movies, int hops) {
+        this.orginNode = orginNode;
+        this.movies = movies;
+        this.hops = hops;
+    }
+
+    public SearchResult() {
+    }
+
     public Node getOrginNode() {
         return orginNode;
     }

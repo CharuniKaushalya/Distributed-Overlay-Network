@@ -11,6 +11,16 @@ public class SearchQuery {
     private int hops;
     private long timestamp;
 
+
+    public SearchQuery(Node originNode, String queryText, int hops) {
+        this.originNode = originNode;
+        this.queryText = queryText;
+        this.hops = hops;
+    }
+
+    public SearchQuery() {
+    }
+
     public Node getOriginNode() {
         return originNode;
     }

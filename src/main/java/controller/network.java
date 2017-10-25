@@ -35,6 +35,7 @@ public class network extends Observable implements Observer {
 
     private final List<Node> neighbours = new ArrayList<>();
     private final List<SearchQuery> searchQueryList = new ArrayList<>();
+    private final Node myNode = new Node();
 
     private int noOfLocalResults = 0;
     private String localQuerry = "";
@@ -48,13 +49,16 @@ public class network extends Observable implements Observer {
     }
 
     public void run() throws IOException {
-    	
+
         this.addObserver(config.APP);
         boolean done = true;
         while (true) {
             if (done) {
                 socket = new DatagramSocket(config.PORT);
                 String msg = config.REG + " " + config.IP + " " + config.PORT + " " + config.USERNAME;
+
+                this.myNode.setIP_address(config.IP);
+                this.myNode.setPort_no(config.PORT);
                 sender(msg);
                 done = false;
             }
@@ -66,7 +70,7 @@ public class network extends Observable implements Observer {
                 String message = new String(data, 0, packet.getLength());
 
                 logger.info("receiving ; " + message);
-                	UpdateTheCMD(message);
+                UpdateTheCMD(message);
                 receiver(message);
                 //    onResponseReceived(message,new Node(packet.getAddress().getHostName(),packet.getPort()));
 
@@ -83,15 +87,15 @@ public class network extends Observable implements Observer {
         return true;
     }
 
-    synchronized void startSearch(String queryText) {
+    public synchronized void startSearch(String queryText) {
         noOfLocalResults = 0;
         localQuerry = queryText;
 
         SearchQuery query = new SearchQuery();
-//        query.setOriginNode(thisNode);
+        query.setOriginNode(myNode);
         query.setQueryText(queryText);
         query.setHops(0);
-//        query.setSenderNode(thisNode);
+        query.setSenderNode(myNode);
         query.setTimestamp(System.currentTimeMillis());
 
         searchQueryList.add(query);
@@ -99,7 +103,7 @@ public class network extends Observable implements Observer {
         List<String> movies = this.movieController.searchMovies(query.getQueryText());
 
         SearchResult result = new SearchResult();
-//        result.setOrginNode(thisNode);
+        result.setOrginNode(myNode);
         result.setMovies(movies);
         result.setHops(0);
         result.setTimestamp(query.getTimestamp());
@@ -113,16 +117,50 @@ public class network extends Observable implements Observer {
     }
 
     public boolean searchRequest(Node peer, SearchQuery query) {
-        String msg = config.SER + " " + peer.getIP_address() + " " + peer.getPort_no() + " " + query.getQueryText() + " " + query.getHops();
-        sender(msg);
+        String msg = config.SER + " " + config.IP + " " + config.PORT + " " + query.getQueryText() + " " + query.getHops();
+        sender(msg,new Node(peer.getIP_address(),peer.getPort_no()));
         return true;
     }
 
     public boolean searchResponce(Node originNode, SearchResult result) {
-        String msg = config.SEROK + " " + config.IP + " " + config.PORT + " " + config.USERNAME;
-        sender(msg);
+        String msg = config.SEROK + " " + result.getMovies().size() + " " + config.IP + " " + config.PORT + " " + result.getHops();
+        for (String m : result.getMovies()) {
+            msg += " " + m;
+        }
+        sender(msg,new Node(result.getOrginNode().getIP_address(),result.getOrginNode().getPort_no()));
         return true;
     }
+
+    synchronized private void search(SearchQuery query) {
+
+        if (searchQueryList.contains(query)) {
+            unAnsweredMessages++;
+            return;
+        } else {
+            searchQueryList.add(query);
+        }
+
+        // Increase the number of hops by one
+        query.setHops(query.getHops() + 1);
+        query.setSenderNode(myNode);
+
+        Node sender = query.getSenderNode();
+
+        List<String> results = movieController.searchMovies(query.getQueryText());
+
+        SearchResult result = new SearchResult();
+        result.setOrginNode(myNode);
+        result.setMovies(results);
+        result.setHops(query.getHops());
+        result.setTimestamp(query.getTimestamp());
+
+        neighbours.stream().filter(peer -> !peer.equals(sender)).forEach(peer -> {
+            searchRequest(peer, query);
+        });
+        logger.info("Result sent to "+query.getOriginNode());
+        searchResponce(query.getOriginNode(), result);
+    }
+
 
     private void sender(String msg) {
         String length_final = formatter.format(msg.length() + 5);
@@ -136,7 +174,7 @@ public class network extends Observable implements Observer {
             logger.error(e);
         }
     }
-    
+
     private void sender(String msg, Node node) {
         String length_final = formatter.format(msg.length() + 5);
         String msg_final = length_final + " " + msg;
@@ -152,7 +190,7 @@ public class network extends Observable implements Observer {
 
     //will be invoked when a response is received
     private void receiver(String message) {
-    	UpdateTheCMD(message);
+        UpdateTheCMD(message);
         receivedMessages++;
         StringTokenizer tokenizer = new StringTokenizer(message, " ");
         String length = tokenizer.nextToken();
@@ -172,12 +210,13 @@ public class network extends Observable implements Observer {
 
 
                     Node node = new Node(ip, port);
-                    String msg = config.JOIN + " " + ip + " " + port + " " + config.USERNAME;
-                    sender(msg);
+                    String msg = config.JOIN + " " + config.IP + " " + config.PORT;
+                    sender(msg,node);
                     addNeighbour(node);
                     break;
 
                 case 2:
+
                     for (int i = 0; i < no_nodes; i++) {
                         String host = tokenizer.nextToken();
                         String hostport = tokenizer.nextToken();
@@ -212,32 +251,72 @@ public class network extends Observable implements Observer {
             logger.info("Successfully unregistered this Node from the boostrap server");
 
         } else if (config.JOIN.equals(command)) {
-        	String ip = tokenizer.nextToken();
+            String ip = tokenizer.nextToken();
             int port = Integer.parseInt(tokenizer.nextToken());
             Node node = new Node(ip, port);
+
+            String joinokMsg = config.JOINOK + " 0";
+            sender(joinokMsg, node);
             addNeighbour(node);
 
         } else if (config.JOINOK.equals(command)) {
+            int result = Integer.parseInt(tokenizer.nextToken());
+            switch (result) {
+                case 0:
+                    logger.info("join successful");
+                    break;
 
+                case 9999:
+                    logger.error("Error while adding new node to routing table");
+                    break;
+            }
+
+        } else if (config.SER.equals(command)) {
+            String ip = tokenizer.nextToken();
+            int port = Integer.parseInt(tokenizer.nextToken());
+            String query= tokenizer.nextToken();
+            int hops = Integer.parseInt(tokenizer.nextToken());
+
+            search(new SearchQuery(new Node(ip,port),query,hops));
+
+        } else if (config.SEROK.equals(command)) {
+            int no_files = Integer.parseInt(tokenizer.nextToken());
+            String ip = tokenizer.nextToken();
+            int port = Integer.parseInt(tokenizer.nextToken());
+            int hops = Integer.parseInt(tokenizer.nextToken());
+
+            List<String> movies = new ArrayList<>();
+
+            for (int i = 0; i < no_files; i++)
+                movies.add(tokenizer.nextToken());
+
+            SearchResult result = new SearchResult(new Node(ip, port), movies, hops);
+            int moviesCount = no_files;
+
+            logger.info(" Result : " + ++noOfLocalResults + "  [ Query = " + localQuerry + "]");
+            String output = String.format("Number of movies: %d\nMovies: %s\nHops: %d\nSender %s:%d\n",
+                    moviesCount, result.getMovies().toString(), result.getHops(), result.getOrginNode().getIP_address(), result.getOrginNode().getPort_no());
+            UpdateTheCMD(output);
 
         } else {
             unAnsweredMessages++;
         }
+
     }
-    
+
     private void addNeighbour(Node node) {
         if (!neighbours.contains(node)) {
             neighbours.add(node);
         }
     }
 
-	@Override
-	public void update(Observable o, Object arg) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	public void UpdateTheCMD(String msg) {
+    @Override
+    public void update(Observable o, Object arg) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void UpdateTheCMD(String msg) {
         setChanged();
         notifyObservers(msg);
         clearChanged();
