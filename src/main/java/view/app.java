@@ -33,7 +33,6 @@ public class app extends javax.swing.JFrame  implements Observer{
      */
     @SuppressWarnings({"unchecked", "rawtypes", "resource"})
     public app() {
-
         BasicConfigurator.configure();
         net = new network();
 
@@ -401,6 +400,7 @@ public class app extends javax.swing.JFrame  implements Observer{
 
     private void RouteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RouteButtonActionPerformed
         // TODO add your handling code here:
+    	net.routingTable();
     }//GEN-LAST:event_RouteButtonActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jTextField1ActionPerformed

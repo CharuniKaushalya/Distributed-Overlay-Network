@@ -19,6 +19,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.*;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 
 /**
  * @author Charuni
@@ -207,9 +208,10 @@ public class network extends Observable implements Observer {
                     logger.info("registration is successful, 1 nodes contacts is returned");
                     String ip = tokenizer.nextToken();
                     int port = Integer.parseInt(tokenizer.nextToken());
+                    String status = "Active";
+                    String timeStamp = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new Date());
 
-
-                    Node node = new Node(ip, port);
+                    Node node = new Node(ip, port, status, timeStamp);
                     String msg = config.JOIN + " " + config.IP + " " + config.PORT;
                     sender(msg,node);
                     addNeighbour(node);
@@ -220,8 +222,10 @@ public class network extends Observable implements Observer {
                     for (int i = 0; i < no_nodes; i++) {
                         String host = tokenizer.nextToken();
                         String hostport = tokenizer.nextToken();
+                        String hoststatus = "Active";
+                        String hosttimeStamp = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new Date());
 
-                        Node temp = new Node(host, Integer.parseInt(hostport));
+                        Node temp = new Node(host, Integer.parseInt(hostport), hoststatus, hosttimeStamp);
                         String joinMsg = config.JOIN + " " + config.IP + " " + config.PORT;
                         sender(joinMsg, temp);
                         addNeighbour(temp);
@@ -253,7 +257,10 @@ public class network extends Observable implements Observer {
         } else if (config.JOIN.equals(command)) {
             String ip = tokenizer.nextToken();
             int port = Integer.parseInt(tokenizer.nextToken());
-            Node node = new Node(ip, port);
+            String status = "Active";
+            String timeStamp = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new Date());
+            Node node = new Node(ip, port, status, timeStamp);
+
 
             String joinokMsg = config.JOINOK + " 0";
             sender(joinokMsg, node);
@@ -311,11 +318,47 @@ public class network extends Observable implements Observer {
     }
     
     public void printNeighbors() {
-        neighbours.forEach((a)->System.out.println(a.getIP_address() + ": " + a.getPort_no()));
         String msg = "\n***********************\nNeighbous\n***********************\n" ;
         printOnCMD(msg);
         neighbours.forEach((a)->printOnCMD(a.getIP_address() + ": " + a.getPort_no() + "\n"));
         printOnCMD("***********************\n");
+    }
+    
+    public void routingTable() {
+    	ArrayList<String> headers = new ArrayList<String>();
+		headers.add("IPADDRESS");
+		headers.add("PORT");
+		headers.add("LASTUPDATE");
+		headers.add("STATUS");
+
+		ArrayList<ArrayList<String>> content = new ArrayList<ArrayList<String>>();
+		 for(Node node: neighbours){
+			ArrayList<String> row1 = new ArrayList<String>();
+			row1.add(node.getIP_address());
+			row1.add(Integer.toString(node.getPort_no()));
+			try{
+			String timeStamp = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new Date());
+	    	SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+	    	System.out.println(timeStamp);
+	    	Date d1 = format.parse(node.getUpdateTime());
+			Date d2 = format.parse(timeStamp);
+			long diff = d2.getTime() - d1.getTime();
+			long diffSeconds = diff / 1000 % 60;
+			long diffMinutes = diff / (60 * 1000) % 60;
+			long diffHours = diff / (60 * 60 * 1000) % 24;
+			long diffDays = diff / (24 * 60 * 60 * 1000);
+			row1.add(diffMinutes+ " Min " + diffSeconds + " Sec");
+		 	} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+
+			row1.add(node.getStatus());
+			content.add(row1);
+		 }
+
+		ConsoleTable ct = new ConsoleTable(headers,content);
+		printOnCMD("\n"+ct.printTable()+"\n");
     }
 
     @Override
