@@ -8,9 +8,6 @@ package main.java.view;
 import java.awt.Color;
 import java.awt.Font;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.swing.AbstractListModel;
 
@@ -64,6 +61,7 @@ public class app extends javax.swing.JFrame  implements Observer{
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 24));
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12));
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 12));
+		jTextArea1.append(config.USERNAME + "> " + "Welcome to Distributed Overlay Network " + " [" + Utils.getTimeStamp() + "]\n");
 
     }
 
@@ -330,7 +328,7 @@ public class app extends javax.swing.JFrame  implements Observer{
         config.BOOTSTRAP_IP = jTextField3.getText();
         config.BOOTSTRAP_PORT = Integer.parseInt(jTextField4.getText());
         // add registration code here
-        logger.info("Add Registration and Leave code Here.......");
+        logger.info("Add Registration and Join code Here.......");
         Thread thread1 = new Thread() {
             public void run() {
                 try {
@@ -343,6 +341,11 @@ public class app extends javax.swing.JFrame  implements Observer{
         thread1.start();
         jTextArea1.append(config.USERNAME + "> send REG [" + Utils.getTimeStamp() + "]\n");
         jToggleButton5.setEnabled(false);
+        jTextField3.setEditable(false);
+        jTextField4.setEditable(false);
+        jTextField1.setEditable(false);
+        jTextField2.setEditable(false);
+        jTextField6.setEditable(false);
     }// GEN-LAST:event_jToggleButton5ActionPerformed
 
     
@@ -440,7 +443,7 @@ public class app extends javax.swing.JFrame  implements Observer{
 	@Override
 	public void update(Observable arg0, Object arg) {
 		// TODO Auto-generated method stub
-		 jTextArea1.append(config.USERNAME + "> " + ((String) arg) + " [" + Utils.getTimeStamp() + "]\n");
+		 jTextArea1.append( ((String) arg));
 		
 	}
 }

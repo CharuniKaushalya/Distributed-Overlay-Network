@@ -49,7 +49,7 @@ public class network extends Observable implements Observer {
     }
 
     public void run() throws IOException {
-
+    	
         this.addObserver(config.APP);
         boolean done = true;
         while (true) {
@@ -309,6 +309,14 @@ public class network extends Observable implements Observer {
             neighbours.add(node);
         }
     }
+    
+    void printNeighbours() {
+        neighbours.forEach((a)->System.out.println(a.getIP_address() + ": " + a.getPort_no()));
+        String msg = "***********************\nNeighbous\n***********************\n" ;
+        printOnCMD(msg);
+        neighbours.forEach((a)->printOnCMD(a.getIP_address() + ": " + a.getPort_no() + "\n"));
+        printOnCMD("***********************\n");
+    }
 
     @Override
     public void update(Observable o, Object arg) {
@@ -317,6 +325,13 @@ public class network extends Observable implements Observer {
     }
 
     public void UpdateTheCMD(String msg) {
+        setChanged();
+        msg = config.USERNAME + "> " + msg + " [" + Utils.getTimeStamp() + "]\n";
+        notifyObservers(msg);
+        clearChanged();
+    }
+    
+    public void printOnCMD(String msg) {
         setChanged();
         notifyObservers(msg);
         clearChanged();
