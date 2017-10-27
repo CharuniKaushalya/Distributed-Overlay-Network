@@ -310,9 +310,9 @@ public class network extends Observable implements Observer {
         }
     }
     
-    void printNeighbours() {
+    public void printNeighbors() {
         neighbours.forEach((a)->System.out.println(a.getIP_address() + ": " + a.getPort_no()));
-        String msg = "***********************\nNeighbous\n***********************\n" ;
+        String msg = "\n***********************\nNeighbous\n***********************\n" ;
         printOnCMD(msg);
         neighbours.forEach((a)->printOnCMD(a.getIP_address() + ": " + a.getPort_no() + "\n"));
         printOnCMD("***********************\n");

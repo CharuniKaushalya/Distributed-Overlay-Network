@@ -106,13 +106,6 @@ public class app extends javax.swing.JFrame  implements Observer{
         jToggleButton5 = new javax.swing.JToggleButton();
         jToggleButton3 = new javax.swing.JToggleButton();
 
-        NeighborsButton1.setText("Print Neighbors");
-        NeighborsButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                NeighborsButton1ActionPerformed(evt);
-            }
-        });
-
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
@@ -366,7 +359,7 @@ public class app extends javax.swing.JFrame  implements Observer{
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(20, 20, 20))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -387,11 +380,8 @@ public class app extends javax.swing.JFrame  implements Observer{
 
     private void NeighborsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NeighborsButtonActionPerformed
         // TODO add your handling code here:
+    	net.printNeighbors();
     }//GEN-LAST:event_NeighborsButtonActionPerformed
-
-    private void NeighborsButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NeighborsButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_NeighborsButton1ActionPerformed
 
     private void StatButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StatButtonActionPerformed
         // TODO add your handling code here:
