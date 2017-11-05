@@ -37,7 +37,7 @@ public class app extends javax.swing.JFrame  implements Observer{
     /**
      * Creates new form app
      */
-    @SuppressWarnings({"unchecked", "rawtypes", "resource"})
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public app() {
         BasicConfigurator.configure();
         net = new network();
@@ -478,6 +478,7 @@ public class app extends javax.swing.JFrame  implements Observer{
 
     private void jToggleButton4ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jToggleButton5ActionPerformed
         // add search code here
+    	net.clearSearchResults();
         String movie = jTextField5.getText().trim().replace(" ", "_");
         net.startSearch(movie);
         logger.info("Add Search code Here.......");

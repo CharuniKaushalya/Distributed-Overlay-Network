@@ -10,6 +10,7 @@ public class SearchResult {
     private Node orginNode;
     private List<String> movies;
     private int hops;
+    private int moviesCount;
     private long timestamp;
 
     public SearchResult(Node orginNode, List<String> movies, int hops) {
@@ -18,7 +19,15 @@ public class SearchResult {
         this.hops = hops;
     }
 
-    public SearchResult() {
+    public int getMoviesCount() {
+		return moviesCount;
+	}
+
+	public void setMoviesCount(int moviesCount) {
+		this.moviesCount = moviesCount;
+	}
+
+	public SearchResult() {
     }
 
     public Node getOrginNode() {

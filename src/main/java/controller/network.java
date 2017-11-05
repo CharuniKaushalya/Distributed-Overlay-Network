@@ -37,13 +37,11 @@ public class network extends Observable implements Observer {
 
 	private final List<Node> neighbours = new ArrayList<>();
 	private final List<SearchQuery> searchQueryList = new ArrayList<>();
+	private List<SearchResult> searchResultList = new ArrayList<>();
 	private final Node myNode = new Node();
 
 	private int noOfLocalResults = 0;
 	private String localQuerry = "";
-	private List<String> LocalQueries = new ArrayList<>();
-	private int queryPointer = 0;
-	private int noOfNodesInTheNetwork = 0;
 
 	public network() {
 		BasicConfigurator.configure();
@@ -345,12 +343,17 @@ public class network extends Observable implements Observer {
 
 			SearchResult result = new SearchResult(new Node(ip, port), movies, hops);
 			int moviesCount = no_files;
-
-			logger.info(" Result : " + ++noOfLocalResults + "  [ Query = " + localQuerry + "]");
-			String output = String.format("Number of movies: %d\nMovies: %s\nHops: %d\nSender %s:%d\n", moviesCount,
-					result.getMovies().toString(), result.getHops(), result.getOrginNode().getIP_address(),
-					result.getOrginNode().getPort_no());
-			UpdateTheCMD(output);
+			result.setMoviesCount(moviesCount);
+			if(moviesCount >0){
+				this.searchResultList.add(result);
+				
+				logger.info(" Result : " + ++noOfLocalResults + "  [ Query = " + localQuerry + "]");
+				this.printSearchResults();
+			}
+//			String output = String.format("Number of movies: %d\nMovies: %s\nHops: %d\nSender %s:%d\n", moviesCount,
+//					result.getMovies().toString(), result.getHops(), result.getOrginNode().getIP_address(),
+//					result.getOrginNode().getPort_no());
+//			UpdateTheCMD(output);
 
 		} else {
 			unAnsweredMessages++;
@@ -372,11 +375,22 @@ public class network extends Observable implements Observer {
 			}
 		}
 	}
+	
+	public void clearSearchResults(){
+		this.searchResultList = new ArrayList<SearchResult>();
+	}
 
 	public void printNeighbors() {
 		String msg = "\n***********************\nNeighbous\n***********************\n";
 		printOnCMD(msg);
 		neighbours.forEach((a) -> printOnCMD(a.getIP_address() + ": " + a.getPort_no() + "\n"));
+		printOnCMD("***********************\n");
+	}
+	
+	public void printSearchResults() {
+		printOnCMD("\n***********************\nSearch Results\n***********************\n");
+		printOnCMD("Origin" + "\t\t" +"Hops" + "\t"+"MovieCount" + "\t"+ "Movies" +"\n");
+		searchResultList.forEach((a) -> printOnCMD(a.getOrginNode().getIP_address()+":"+a.getOrginNode().getPort_no() + "\t"+ a.getHops()+"\t" +a.getMoviesCount()+ "\t" +a.getMovies().toString() + "\n"));
 		printOnCMD("***********************\n");
 	}
 

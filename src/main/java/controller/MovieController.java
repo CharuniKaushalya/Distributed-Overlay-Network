@@ -19,6 +19,37 @@ public class MovieController {
     private MovieController(String filepath) {
         BasicConfigurator.configure();
         this.movies = getMovies(filepath);
+        /*
+        List<String> fileNames = new ArrayList<>();
+        fileNames.add("Adventures of Tintin");
+        fileNames.add("Jack and Jill");
+        fileNames.add("Glee");
+        fileNames.add("The Vampire Diarie");
+        fileNames.add("King Arthur");
+        fileNames.add("Windows XP");
+        fileNames.add("Harry Potter");
+        fileNames.add("Kung Fu Panda");
+        fileNames.add("Lady Gaga");
+        fileNames.add("Twilight");
+        fileNames.add("Windows 8");
+        fileNames.add("Mission Impossible");
+        fileNames.add("Turn Up The Music");
+        fileNames.add("Super Mario");
+        fileNames.add("American Pickers");
+        fileNames.add("Microsoft Office 2010");
+        fileNames.add("Happy Feet");
+        fileNames.add("Modern Family");
+        fileNames.add("American Idol");
+        fileNames.add("Hacking for Dummies");
+        
+        Collections.shuffle(fileNames);
+
+        Random rand = new Random();
+        int num = rand.nextInt(3) + 3;
+        for (int i = 0; i < num; i++){
+            this.movies.add(fileNames.get(i));
+        }
+        */
     }
 
     public static MovieController getInstance(String filepath) {
@@ -77,7 +108,7 @@ public class MovieController {
         List<String> foundList = new ArrayList<String>();
         String otherQuery = null;
 
-        String thisQuery = "_" + query.toLowerCase().replaceAll(" ", "_")+"_";
+        String thisQuery =  query.toLowerCase().replaceAll(" ", "_");
 
         if (query != null && !query.trim().equals("")) {
 
@@ -85,6 +116,8 @@ public class MovieController {
 
                 otherQuery = "_"+movie.toLowerCase().replaceAll(" ","_")+"_";
 
+                System.out.println(thisQuery);
+                System.out.println(otherQuery);
                 if (otherQuery.contains(thisQuery)) {
                     foundList.add(movie.replaceAll(" ","_"));
                 }
