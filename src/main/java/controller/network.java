@@ -151,10 +151,19 @@ public class network extends Observable implements Observer {
 		sender(msg, new Node(result.getOrginNode().getIP_address(), result.getOrginNode().getPort_no()));
 		return true;
 	}
+	
+	private boolean checkQueryList(SearchQuery query){
+		for ( SearchQuery q: searchQueryList ){
+			if(q.getQueryText().equals(query.getQueryText())){
+				return true;
+			}
+		}
+		return false;
+	}
 
 	synchronized private void search(SearchQuery query) {
 
-		if (searchQueryList.contains(query)) {
+		if (this.checkQueryList(query)) {
 			unAnsweredMessages++;
 			return;
 		} else {
@@ -170,7 +179,7 @@ public class network extends Observable implements Observer {
 		List<String> results = movieController.searchMovies(query.getQueryText());
 
 		SearchResult result = new SearchResult();
-		result.setOrginNode(myNode);
+		result.setOrginNode(query.getOriginNode());
 		result.setMovies(results);
 		result.setHops(query.getHops());
 		result.setTimestamp(query.getTimestamp());
