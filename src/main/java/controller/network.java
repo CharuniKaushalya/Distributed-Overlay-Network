@@ -402,7 +402,7 @@ public class network extends Observable implements Observer {
 	
 	public void printSearchResults() {
 		printOnCMD("\n***********************\nSearch Results\n***********************\n");
-		printOnCMD("Origin" + "\t\t" +"Hops" + "\t"+"Timestamp" + "\t"+"MovieCount" + "\t"+ "Movies" +"\n");
+		printOnCMD("Origin" + "\t\t" +"Hops" + "\t"+"Timestamp" + "\t\t"+"MovieCount" + "\t"+ "Movies" +"\n");
 		searchResultList.forEach((a) -> printOnCMD(a.getOrginNode().getIP_address()+":"+a.getOrginNode().getPort_no() + "\t"+ a.getHops()+"\t"+a.getTimestamp()+"\t" +a.getMoviesCount()+ "\t" +a.getMovies().toString() + "\n"));
 		printOnCMD("***********************\n");
 	}
