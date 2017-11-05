@@ -17,6 +17,12 @@ import main.java.controller.network;
 import main.java.controller.Utils;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
+import javax.swing.JToggleButton;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.GroupLayout;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 /**
  * @author Charuni
@@ -89,6 +95,11 @@ public class app extends javax.swing.JFrame  implements Observer{
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jToggleButton4 = new javax.swing.JToggleButton();
+        jToggleButton4.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		jToggleButton4ActionPerformed(e);
+        	}
+        });
         jLabel7 = new javax.swing.JLabel();
         jTextField3 = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
@@ -219,53 +230,66 @@ public class app extends javax.swing.JFrame  implements Observer{
 
         jToggleButton5.setBackground(new java.awt.Color(0, 102, 0));
         jToggleButton5.setForeground(new java.awt.Color(255, 255, 255));
-        jToggleButton5.setText("Register");
+        jToggleButton5.setText("Register & Join");
         jToggleButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jToggleButton5ActionPerformed(evt);
+                registerAndJoinActionPerformed(evt);
             }
         });
 
         jToggleButton3.setBackground(new java.awt.Color(0, 102, 0));
         jToggleButton3.setForeground(new java.awt.Color(255, 255, 255));
-        jToggleButton3.setText("Leave");
+        jToggleButton3.setText("Un Register");
         jToggleButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jToggleButton3ActionPerformed(evt);
+                unRegisterActionPerformed(evt);
             }
         });
+        
+        tglbtnLeave = new JToggleButton();
+        tglbtnLeave.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		tglbtnLeaveActionPerformed(e);
+        	}
+        });
+        tglbtnLeave.setText("Leave");
+        tglbtnLeave.setForeground(Color.WHITE);
+        tglbtnLeave.setBackground(new Color(0, 102, 0));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(RouteButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(StatButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(NeighborsButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jToggleButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jToggleButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+        	jPanel2Layout.createParallelGroup(Alignment.LEADING)
+        		.addGroup(jPanel2Layout.createSequentialGroup()
+        			.addContainerGap()
+        			.addGroup(jPanel2Layout.createParallelGroup(Alignment.LEADING)
+        				.addComponent(jButton1, GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+        				.addComponent(RouteButton, GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+        				.addComponent(StatButton, GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+        				.addComponent(NeighborsButton, GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+        				.addComponent(jToggleButton5, GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+        				.addComponent(jToggleButton3, GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+        				.addComponent(tglbtnLeave, GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)))
         );
         jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jToggleButton5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jToggleButton3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(NeighborsButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(StatButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(RouteButton)
-                .addContainerGap())
+        	jPanel2Layout.createParallelGroup(Alignment.LEADING)
+        		.addGroup(jPanel2Layout.createSequentialGroup()
+        			.addContainerGap()
+        			.addComponent(jToggleButton5)
+        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addComponent(jToggleButton3)
+        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addComponent(tglbtnLeave)
+        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addComponent(NeighborsButton)
+        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addComponent(StatButton)
+        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addComponent(jButton1)
+        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addComponent(RouteButton)
+        			.addContainerGap())
         );
+        jPanel2.setLayout(jPanel2Layout);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -377,7 +401,18 @@ public class app extends javax.swing.JFrame  implements Observer{
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void NeighborsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NeighborsButtonActionPerformed
+    protected void tglbtnLeaveActionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		System.out.println("Leave the network");
+		net.send_leave();
+		jTextArea1.append(config.USERNAME + "> send LEAVE [" + Utils.getTimeStamp() + "]\n");
+        tglbtnLeave.setEnabled(false);
+        net.unRegister();
+        jTextArea1.append(config.USERNAME + "> send UNREG [" + Utils.getTimeStamp() + "]\n");
+        jToggleButton3.setEnabled(false);
+	}
+
+	private void NeighborsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NeighborsButtonActionPerformed
         // TODO add your handling code here:
     	net.printNeighbors();
     }//GEN-LAST:event_NeighborsButtonActionPerformed
@@ -386,10 +421,10 @@ public class app extends javax.swing.JFrame  implements Observer{
         // TODO add your handling code here:
     }//GEN-LAST:event_StatButtonActionPerformed
 
-    private void jToggleButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton3ActionPerformed
+    private void unRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton3ActionPerformed
                 // add leave code here
         logger.info("Add Leave code Here.......");
-        net.leave();
+        net.unRegister();
         jTextArea1.append(config.USERNAME + "> send UNREG [" + Utils.getTimeStamp() + "]\n");
         jToggleButton3.setEnabled(false);
     }//GEN-LAST:event_jToggleButton3ActionPerformed
@@ -411,7 +446,7 @@ public class app extends javax.swing.JFrame  implements Observer{
         // TODO add your handling code here:
     }// GEN-LAST:event_jTextField3ActionPerformed
 
-    private void jToggleButton5ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jToggleButton5ActionPerformed
+    private void registerAndJoinActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jToggleButton5ActionPerformed
         // TODO add your handling code here:
         config.IP = jTextField1.getText();
         config.PORT = Integer.parseInt(jTextField2.getText());
@@ -526,6 +561,7 @@ public class app extends javax.swing.JFrame  implements Observer{
     private javax.swing.JToggleButton jToggleButton3;
     private javax.swing.JToggleButton jToggleButton4;
     private javax.swing.JToggleButton jToggleButton5;
+    private JToggleButton tglbtnLeave;
     // End of variables declaration//GEN-END:variables
 
 	@Override
