@@ -113,7 +113,7 @@ public class network extends Observable implements Observer {
 		query.setQueryText(queryText);
 		query.setHops(0);
 		query.setSenderNode(myNode);
-		query.setTimestamp(System.currentTimeMillis());
+		query.setTimestamp(new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new Date()));
 
 		searchQueryList.add(query);
 
@@ -345,10 +345,9 @@ public class network extends Observable implements Observer {
 			SearchResult result = new SearchResult(new Node(ip, port), movies, hops);
 			int moviesCount = no_files;
 			result.setMoviesCount(moviesCount);
+			result.setTimestamp(new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new Date()));
 			if(moviesCount >0){
 				this.searchResultList.add(result);
-				
-				logger.info(" Result : " + ++noOfLocalResults + "  [ Query = " + localQuerry + "]");
 				this.printSearchResults();
 			}
 //			String output = String.format("Number of movies: %d\nMovies: %s\nHops: %d\nSender %s:%d\n", moviesCount,
@@ -390,8 +389,8 @@ public class network extends Observable implements Observer {
 	
 	public void printSearchResults() {
 		printOnCMD("\n***********************\nSearch Results\n***********************\n");
-		printOnCMD("Origin" + "\t\t" +"Hops" + "\t"+"MovieCount" + "\t"+ "Movies" +"\n");
-		searchResultList.forEach((a) -> printOnCMD(a.getOrginNode().getIP_address()+":"+a.getOrginNode().getPort_no() + "\t"+ a.getHops()+"\t" +a.getMoviesCount()+ "\t" +a.getMovies().toString() + "\n"));
+		printOnCMD("Origin" + "\t\t" +"Hops" + "\t"+"Timestamp" + "\t"+"MovieCount" + "\t"+ "Movies" +"\n");
+		searchResultList.forEach((a) -> printOnCMD(a.getOrginNode().getIP_address()+":"+a.getOrginNode().getPort_no() + "\t"+ a.getHops()+"\t"+a.getTimestamp()+"\t" +a.getMoviesCount()+ "\t" +a.getMovies().toString() + "\n"));
 		printOnCMD("***********************\n");
 	}
 
