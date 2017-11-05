@@ -45,5 +45,7 @@ public class config {
     public static final String STATOK = "STATOK";
     public static final String QUERY = "QUERY";
     public static final String CLEAR = "CLEAR";
+    public static final String PING = "PING";
+    public static final String PINGOK = "PINGOK";
 
 }
