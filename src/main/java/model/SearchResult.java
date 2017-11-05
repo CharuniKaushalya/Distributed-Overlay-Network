@@ -11,7 +11,7 @@ public class SearchResult {
     private List<String> movies;
     private int hops;
     private int moviesCount;
-    private long timestamp;
+    private String timestamp;
 
     public SearchResult(Node orginNode, List<String> movies, int hops) {
         this.orginNode = orginNode;
@@ -54,11 +54,11 @@ public class SearchResult {
         this.hops = hops;
     }
 
-    public long getTimestamp() {
+    public String getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(long timestamp) {
+    public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
 }
