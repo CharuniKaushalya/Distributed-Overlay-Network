@@ -419,6 +419,7 @@ public class app extends javax.swing.JFrame  implements Observer{
 
     private void StatButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StatButtonActionPerformed
         // TODO add your handling code here:
+    	net.printStatistics(net.getStatistics());
     }//GEN-LAST:event_StatButtonActionPerformed
 
     private void unRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton3ActionPerformed
@@ -431,6 +432,7 @@ public class app extends javax.swing.JFrame  implements Observer{
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your clear status code
+    	net.clearStats();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void RouteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RouteButtonActionPerformed

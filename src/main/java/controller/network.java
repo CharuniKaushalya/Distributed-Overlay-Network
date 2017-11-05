@@ -9,6 +9,7 @@ import main.java.model.Node;
 import main.java.model.SearchQuery;
 import main.java.model.SearchResult;
 import main.java.model.config;
+import main.java.model.Statistics;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
@@ -429,7 +430,30 @@ public class network extends Observable implements Observer {
 		ConsoleTable ct = new ConsoleTable(headers, content);
 		printOnCMD("\n" + ct.printTable() + "\n");
 	}
+	public Statistics getStatistics() {
+		Statistics stat = new Statistics();
+		stat.setAnsweredMessages(receivedMessages- unAnsweredMessages);
+        stat.setSentMessages(sentMessages);
+        stat.setReceivedMessages(receivedMessages);
+        stat.setNodeDegree(neighbours.size());
+        return stat;
+	}
 
+	public void printStatistics(Statistics stat) {
+		String msg = "\n***********************\nStatistics\n***********************\n";
+		printOnCMD(msg);
+		printOnCMD(stat.toString());
+		printOnCMD("***********************\n");
+
+		
+	}
+	
+    public void clearStats(){
+        receivedMessages=0;
+        sentMessages= 0;
+        unAnsweredMessages = 0;
+        UpdateTheCMD("Statistics are cleared. ");
+    }
 	@Override
 	public void update(Observable o, Object arg) {
 		// TODO Auto-generated method stub
