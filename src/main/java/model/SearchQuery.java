@@ -9,13 +9,20 @@ public class SearchQuery {
     private Node senderNode;
     private String queryText;
     private int hops;
-    private String timestamp;
+    private long timestamp;
 
 
     public SearchQuery(Node originNode, String queryText, int hops) {
         this.originNode = originNode;
         this.queryText = queryText;
         this.hops = hops;
+    }
+    
+    public SearchQuery(Node originNode, String queryText, int hops, long timestamp) {
+        this.originNode = originNode;
+        this.queryText = queryText;
+        this.hops = hops;
+        this.timestamp = timestamp;
     }
 
     public SearchQuery() {
@@ -53,11 +60,11 @@ public class SearchQuery {
         this.hops = hops;
     }
 
-    public String getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 }

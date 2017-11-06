@@ -32,6 +32,8 @@ public class network extends Observable implements Observer {
 	private DatagramSocket socket;
 	@SuppressWarnings("unused")
 	private int receivedMessages, sentMessages, unAnsweredMessages;
+    private List<Integer> latencyArray = new ArrayList<>();
+    private List<Integer> hopArray = new ArrayList<>();
 	private DecimalFormat formatter = new DecimalFormat("0000");
 
 	final private MovieController movieController = MovieController.getInstance("../../resources/File Names.txt");
@@ -112,7 +114,7 @@ public class network extends Observable implements Observer {
 		query.setQueryText(queryText);
 		query.setHops(0);
 		query.setSenderNode(myNode);
-		query.setTimestamp(new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new Date()));
+		query.setTimestamp(System.currentTimeMillis());
 
 		searchQueryList.add(query);
 
@@ -134,14 +136,14 @@ public class network extends Observable implements Observer {
 
 	public boolean searchRequest(Node peer, SearchQuery query) {
 		String msg = config.SER + " " + config.IP + " " + config.PORT + " " + query.getQueryText() + " "
-				+ query.getHops();
+				+ query.getHops() +  " " + query.getTimestamp();
 		sender(msg, new Node(peer.getIP_address(), peer.getPort_no()));
 		return true;
 	}
 
 	public boolean searchResponce(Node originNode, SearchResult result) {
 		String msg = config.SEROK + " " + result.getMovies().size() + " " + config.IP + " " + config.PORT + " "
-				+ result.getHops();
+				+ result.getHops() + " " + result.getTimestamp();
 		for (String m : result.getMovies()) {
 			msg += " " + m;
 		}
@@ -323,14 +325,23 @@ public class network extends Observable implements Observer {
 			int port = Integer.parseInt(tokenizer.nextToken());
 			String query = tokenizer.nextToken();
 			int hops = Integer.parseInt(tokenizer.nextToken());
+			long timestamp 	= Long.parseLong(tokenizer.nextToken());
+			System.out.println("here come serch");
+			System.out.println(timestamp);
 
-			search(new SearchQuery(new Node(ip, port), query, hops));
+			search(new SearchQuery(new Node(ip, port), query, hops, timestamp));
 
 		} else if (config.SEROK.equals(command)) {
 			int no_files = Integer.parseInt(tokenizer.nextToken());
 			String ip = tokenizer.nextToken();
 			int port = Integer.parseInt(tokenizer.nextToken());
 			int hops = Integer.parseInt(tokenizer.nextToken());
+			long timestamp = Long.parseLong(tokenizer.nextToken());
+			long latency = (System.currentTimeMillis() -timestamp);
+
+
+            latencyArray.add((int) latency);
+            hopArray.add(hops);
 
 			List<String> movies = new ArrayList<>();
 
@@ -340,9 +351,10 @@ public class network extends Observable implements Observer {
 			SearchResult result = new SearchResult(new Node(ip, port), movies, hops);
 			int moviesCount = no_files;
 			result.setMoviesCount(moviesCount);
-			result.setTimestamp(new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new Date()));
 			if(moviesCount >0){
 				this.searchResultList.add(result);
+				
+				logger.info(" Result : " + ++noOfLocalResults + "  [ Query = " + localQuerry + "]");
 				this.printSearchResults();
 			}
 //			String output = String.format("Number of movies: %d\nMovies: %s\nHops: %d\nSender %s:%d\n", moviesCount,
@@ -402,8 +414,8 @@ public class network extends Observable implements Observer {
 	
 	public void printSearchResults() {
 		printOnCMD("\n***********************\nSearch Results\n***********************\n");
-		printOnCMD("Origin" + "\t\t" +"Hops" + "\t"+"Timestamp" + "\t"+"MovieCount" + "\t"+ "Movies" +"\n");
-		searchResultList.forEach((a) -> printOnCMD(a.getOrginNode().getIP_address()+":"+a.getOrginNode().getPort_no() + "\t"+ a.getHops()+"\t"+a.getTimestamp()+"\t" +a.getMoviesCount()+ "\t" +a.getMovies().toString() + "\n"));
+		printOnCMD("Origin" + "\t\t" +"Hops" + "\t"+"MovieCount" + "\t"+ "Movies" +"\n");
+		searchResultList.forEach((a) -> printOnCMD(a.getOrginNode().getIP_address()+":"+a.getOrginNode().getPort_no() + "\t"+ a.getHops()+"\t" +a.getMoviesCount()+ "\t" +a.getMovies().toString() + "\n"));
 		printOnCMD("***********************\n");
 	}
 
@@ -448,6 +460,22 @@ public class network extends Observable implements Observer {
         stat.setSentMessages(sentMessages);
         stat.setReceivedMessages(receivedMessages);
         stat.setNodeDegree(neighbours.size());
+        if(latencyArray.size()>0){
+            double avg = latencyArray.stream().mapToLong(val -> val).average().getAsDouble();
+            stat.setLatencyMax(Collections.max(latencyArray));
+            stat.setLatencyMin(Collections.min(latencyArray));
+            stat.setLatencyAverage(avg);
+            stat.setLatencySD(Utils.getStandardDeviation(latencyArray.toArray(), avg));
+            stat.setNumberOfLatencies(latencyArray.size());
+
+            avg = hopArray.stream().mapToLong(val -> val).average().getAsDouble();
+            stat.setHopsMax(Collections.max(hopArray));
+            stat.setHopsMin(Collections.min(hopArray));
+            stat.setHopsAverage(avg);
+            stat.setHopsSD(Utils.getStandardDeviation(hopArray.toArray(), avg));
+            stat.setNumberOfHope(hopArray.size());
+
+        }
         return stat;
 	}
 
@@ -464,6 +492,8 @@ public class network extends Observable implements Observer {
         receivedMessages=0;
         sentMessages= 0;
         unAnsweredMessages = 0;
+        latencyArray= new ArrayList<>();
+        hopArray = new ArrayList<>();
         UpdateTheCMD("Statistics are cleared. ");
     }
 	@Override

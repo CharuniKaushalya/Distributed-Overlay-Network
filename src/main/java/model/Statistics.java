@@ -16,6 +16,8 @@ public class Statistics {
     private int hopsMax=0;
     private double hopsSD=0;
     private double hopsAverage=0;
+    private int numberOfHope=0;
+    private int numberOfLatencies =0;
     
     public Statistics() {
 
@@ -86,6 +88,22 @@ public class Statistics {
         this.latencySD = latencySD;
     }
 
+    public int getNumberOfLatencies() {
+        return numberOfLatencies;
+    }
+
+    public void setNumberOfLatencies(int numberOfLatencies) {
+        this.numberOfLatencies = numberOfLatencies;
+    }
+    
+    public int getNumberOfHope() {
+        return numberOfHope;
+    }
+
+    public void setNumberOfHope(int numberOfHope) {
+        this.numberOfHope = numberOfHope;
+    }
+
     public int getHopsMin() {
         return hopsMin;
     }
@@ -124,10 +142,12 @@ public class Statistics {
         sb.append("Received Messages\t:"+receivedMessages+"\n");
         sb.append("Answered Messages\t:"+answeredMessages+"\n");
         sb.append("Node degree\t\t:"+nodeDegree+"\n\n");
+        sb.append("No of Latencies\t:"+numberOfLatencies+"\n");
         sb.append("Latency Min\t\t:"+latencyMin+"\n");
         sb.append("Latency Max\t\t:"+latencyMax+"\n");
         sb.append("Latency Average\t:"+latencyAverage+"\n");
         sb.append("Latency SD\t\t:"+latencySD+"\n\n");
+        sb.append("No of hops\t\t:"+numberOfHope+"\n");
         sb.append("Hops Min\t\t:"+hopsMin+"\n");
         sb.append("Hops Max\t\t:"+hopsMax+"\n");
         sb.append("Hops Average\t:"+hopsAverage+"\n");
