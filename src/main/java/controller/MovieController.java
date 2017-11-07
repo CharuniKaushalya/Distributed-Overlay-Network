@@ -12,7 +12,7 @@ import java.util.*;
  */
 public class MovieController {
 
-    final static private Logger logger = Logger.getLogger(app.class);
+    final static private Logger logger = Logger.getLogger(MovieController.class);
     private static MovieController instance;
     private List<String> movies = new ArrayList<String>();
 
