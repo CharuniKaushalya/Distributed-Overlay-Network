@@ -249,9 +249,12 @@ public class network extends Observable implements Observer {
 				for (int i = 0; i < no_nodes; i++) {
 					String host = tokenizer.nextToken();
 					String hostport = tokenizer.nextToken();
-					Node temp = new Node(host, Integer.parseInt(hostport));					
-					String pingMsg = config.PING + " " + config.IP + " " + config.PORT;
-					sender(pingMsg,temp);
+					String hoststatus = "Active";
+					String hosttimeStamp = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new Date());
+					Node temp = new Node(host, Integer.parseInt(hostport), hoststatus, hosttimeStamp);
+					String joinMsg = config.JOIN + " " + config.IP + " " + config.PORT;
+					sender(joinMsg, temp);
+					addNeighbour(temp);
 				}
 				logger.info("registration is successful, 2 nodes' contacts are returned");
 				break;
@@ -375,9 +378,11 @@ public class network extends Observable implements Observer {
 			String hoststatus = "Active";
 			String hosttimeStamp = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new Date());
 			Node temp = new Node(host, Integer.parseInt(hostport), hoststatus, hosttimeStamp);
-			String joinMsg = config.JOIN + " " + config.IP + " " + config.PORT;
-			sender(joinMsg, temp);
-			addNeighbour(temp);
+			//String joinMsg = config.JOIN + " " + config.IP + " " + config.PORT;
+			//sender(joinMsg, temp);
+			//addNeighbour(temp);
+			//System.out.println(neighbours.indexOf(new Node(host,Integer.parseInt(hostport))));
+			//Update the routing table
 			
 		}
 		else {
