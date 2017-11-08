@@ -252,7 +252,7 @@ public class app extends javax.swing.JFrame  implements Observer{
         		tglbtnLeaveActionPerformed(e);
         	}
         });
-        tglbtnLeave.setText("Leave");
+        tglbtnLeave.setText("Leave & Un Register");
         tglbtnLeave.setForeground(Color.WHITE);
         tglbtnLeave.setBackground(new Color(0, 102, 0));
 
@@ -467,6 +467,16 @@ public class app extends javax.swing.JFrame  implements Observer{
             }
         };
         thread1.start();
+        Thread thread2 = new Thread() {
+            public void run() {
+                try {
+                    net.update();
+                } catch (IOException e) {
+                    logger.error(e);
+                }
+            }
+        };
+        thread2.start();
         jTextArea1.append(config.USERNAME + "> send REG [" + Utils.getTimeStamp() + "]\n");
         jToggleButton5.setEnabled(false);
         jTextField3.setEditable(false);

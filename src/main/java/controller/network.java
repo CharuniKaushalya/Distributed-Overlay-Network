@@ -19,6 +19,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
@@ -50,6 +52,27 @@ public class network extends Observable implements Observer {
 		BasicConfigurator.configure();
 
 	}
+	public void update() throws IOException {
+		int MINUTES = 1; // The delay in minutes
+		Timer timer = new Timer();
+		 timer.schedule(new TimerTask() {
+		    @Override
+		    public void run() { // Function runs every MINUTES minutes.
+		        // Run the code you want here
+				neighbours.forEach((a) -> {	
+					a.setStatus("InActive");
+					String timeStamp = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new Date());
+					a.setUpdateTime(timeStamp);
+					String pingMsg = config.PING + " " + config.IP + " " + config.PORT;
+					sender(pingMsg,a);
+				});
+		        //CLASSB.funcb(); // If the function you wanted was static
+		    }
+		 }, 0, 1000 * 60 * MINUTES);
+		 
+			
+			
+		}
 
 	public void run() throws IOException {
 
@@ -206,6 +229,9 @@ public class network extends Observable implements Observer {
 	private void sender(String msg, Node node) {
 		String length_final = formatter.format(msg.length() + 5);
 		String msg_final = length_final + " " + msg;
+		if(!msg.contains(config.PING) && !msg.contains(config.PINGOK)){
+			AddtoTheCMD(msg_final);
+		}
 		try {
 			DatagramPacket packet = new DatagramPacket(msg_final.getBytes(), msg_final.getBytes().length,
 					InetAddress.getByName(node.getIP_address()), node.getPort_no());
@@ -218,11 +244,14 @@ public class network extends Observable implements Observer {
 
 	// will be invoked when a response is received
 	private void receiver(String message) {
-		UpdateTheCMD(message);
+
 		receivedMessages++;
 		StringTokenizer tokenizer = new StringTokenizer(message, " ");
 		String length = tokenizer.nextToken();
 		String command = tokenizer.nextToken();
+		if(!command.equals(config.PING) && !command.equals(config.PINGOK) ){
+			UpdateTheCMD(message);
+		}
 
 		if (config.REGOK.equals(command)) {
 			int no_nodes = Integer.parseInt(tokenizer.nextToken());
@@ -366,23 +395,23 @@ public class network extends Observable implements Observer {
 //			UpdateTheCMD(output);
 
 		} else if (config.PING.equals(command)) {
+			receivedMessages --;
 			String host = tokenizer.nextToken();
 			String hostport = tokenizer.nextToken();
 			Node temp = new Node(host, Integer.parseInt(hostport));					
 			String pingMsg = config.PINGOK + " " + config.IP + " " + config.PORT;
 			sender(pingMsg,temp);
+			sentMessages--;
 			
 		}else if (config.PINGOK.equals(command)) {
+			receivedMessages --;
 			String host = tokenizer.nextToken();
 			String hostport = tokenizer.nextToken();
-			String hoststatus = "Active";
-			String hosttimeStamp = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new Date());
-			Node temp = new Node(host, Integer.parseInt(hostport), hoststatus, hosttimeStamp);
-			//String joinMsg = config.JOIN + " " + config.IP + " " + config.PORT;
-			//sender(joinMsg, temp);
-			//addNeighbour(temp);
-			//System.out.println(neighbours.indexOf(new Node(host,Integer.parseInt(hostport))));
-			//Update the routing table
+			int port = Integer.parseInt(hostport);
+			Node tempnode = neighbours.stream().filter(node -> port == node.getPort_no()).collect(Collectors.toList()).get(0);
+			tempnode.setStatus("Active");
+			String timeStamp = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new Date());
+			tempnode.setUpdateTime(timeStamp);
 			
 		}
 		else {
@@ -507,13 +536,19 @@ public class network extends Observable implements Observer {
 
 	}
 
-	public void UpdateTheCMD(String msg) {
+	public void AddtoTheCMD(String msg) {
 		setChanged();
 		msg = config.USERNAME + "> " + msg + " [" + Utils.getTimeStamp() + "]\n";
 		notifyObservers(msg);
 		clearChanged();
 	}
-
+	
+	public void UpdateTheCMD(String msg) {
+		setChanged();
+		msg = config.USERNAME + "< " + msg + " [" + Utils.getTimeStamp() + "]\n";
+		notifyObservers(msg);
+		clearChanged();
+	}
 	public void printOnCMD(String msg) {
 		setChanged();
 		notifyObservers(msg);
