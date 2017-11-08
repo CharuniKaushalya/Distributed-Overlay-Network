@@ -44,34 +44,30 @@ public class network extends Observable implements Observer {
 	private List<SearchResult> searchResultList = new ArrayList<>();
 	private final Node myNode = new Node();
 
-	private int noOfLocalResults = 0;
-	private String localQuerry = "";
-
 	public network() {
 		BasicConfigurator.configure();
 
 	}
+
 	public void update() throws IOException {
 		int MINUTES = 1; // The delay in minutes
 		Timer timer = new Timer();
-		 timer.schedule(new TimerTask() {
-		    @Override
-		    public void run() { // Function runs every MINUTES minutes.
-		        // Run the code you want here
-				neighbours.forEach((a) -> {	
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() { // Function runs every MINUTES minutes.
+				// Run the code you want here
+				neighbours.forEach((a) -> {
 					a.setStatus("InActive");
 					String timeStamp = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new Date());
 					a.setUpdateTime(timeStamp);
 					String pingMsg = config.PING + " " + config.IP + " " + config.PORT;
-					sender(pingMsg,a);
+					sender(pingMsg, a);
 				});
-		        //CLASSB.funcb(); // If the function you wanted was static
-		    }
-		 }, 0, 1000 * 60 * MINUTES);
-		 
-			
-			
-		}
+				// CLASSB.funcb(); // If the function you wanted was static
+			}
+		}, 0, 1000 * 60 * MINUTES);
+
+	}
 
 	public void run() throws IOException {
 
@@ -128,8 +124,6 @@ public class network extends Observable implements Observer {
 	}
 
 	public synchronized void startSearch(String queryText) {
-		noOfLocalResults = 0;
-		localQuerry = queryText;
 
 		SearchQuery query = new SearchQuery();
 		query.setOriginNode(myNode);
@@ -256,7 +250,7 @@ public class network extends Observable implements Observer {
 	private void sender(String msg, Node node) {
 		String length_final = formatter.format(msg.length() + 5);
 		String msg_final = length_final + " " + msg;
-		if(!msg.contains(config.PING) && !msg.contains(config.PINGOK)){
+		if (!msg.contains(config.PING) && !msg.contains(config.PINGOK)) {
 			AddtoTheCMD(msg_final);
 		}
 		try {
@@ -276,7 +270,7 @@ public class network extends Observable implements Observer {
 		StringTokenizer tokenizer = new StringTokenizer(message, " ");
 		String length = tokenizer.nextToken();
 		String command = tokenizer.nextToken();
-		if(!command.equals(config.PING) && !command.equals(config.PINGOK) ){
+		if (!command.equals(config.PING) && !command.equals(config.PINGOK)) {
 			UpdateTheCMD(message);
 		}
 
@@ -412,7 +406,6 @@ public class network extends Observable implements Observer {
 			if (moviesCount > 0) {
 				this.searchResultList.add(result);
 
-				logger.info(" Result : " + ++noOfLocalResults + "  [ Query = " + localQuerry + "]");
 				this.printSearchResults();
 			}
 			// String output = String.format("Number of movies: %d\nMovies:
@@ -423,7 +416,7 @@ public class network extends Observable implements Observer {
 			// UpdateTheCMD(output);
 
 		} else if (config.PING.equals(command)) {
-			receivedMessages --;
+			receivedMessages--;
 			String host = tokenizer.nextToken();
 			String hostport = tokenizer.nextToken();
 			Node temp = new Node(host, Integer.parseInt(hostport));
@@ -431,17 +424,17 @@ public class network extends Observable implements Observer {
 			sender(pingMsg, temp);
 			sentMessages--;
 
-		}else if (config.PINGOK.equals(command)) {
-			receivedMessages --;
+		} else if (config.PINGOK.equals(command)) {
+			receivedMessages--;
 			String host = tokenizer.nextToken();
 			String hostport = tokenizer.nextToken();
 			int port = Integer.parseInt(hostport);
-			Node tempnode = neighbours.stream().filter(node -> port == node.getPort_no()).collect(Collectors.toList()).get(0);
+			Node tempnode = neighbours.stream().filter(node -> port == node.getPort_no()).collect(Collectors.toList())
+					.get(0);
 			tempnode.setStatus("Active");
 			String timeStamp = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new Date());
 			tempnode.setUpdateTime(timeStamp);
-		}
-		else {
+		} else {
 			unAnsweredMessages++;
 		}
 
@@ -573,13 +566,14 @@ public class network extends Observable implements Observer {
 		notifyObservers(msg);
 		clearChanged();
 	}
-	
+
 	public void UpdateTheCMD(String msg) {
 		setChanged();
 		msg = config.USERNAME + "< " + msg + " [" + Utils.getTimeStamp() + "]\n";
 		notifyObservers(msg);
 		clearChanged();
 	}
+
 	public void printOnCMD(String msg) {
 		setChanged();
 		notifyObservers(msg);
