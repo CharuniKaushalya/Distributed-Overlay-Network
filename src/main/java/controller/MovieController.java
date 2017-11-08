@@ -12,14 +12,15 @@ import java.util.*;
  */
 public class MovieController {
 
-    final static private Logger logger = Logger.getLogger(app.class);
+    final static private Logger logger = Logger.getLogger(MovieController.class);
     private static MovieController instance;
     private List<String> movies = new ArrayList<String>();
 
     private MovieController(String filepath) {
         BasicConfigurator.configure();
-        this.movies = getMovies(filepath);
-        /*
+//        this.movies = getMovies(filepath);
+//        System.out.println(this.movies);
+        
         List<String> fileNames = new ArrayList<>();
         fileNames.add("Adventures of Tintin");
         fileNames.add("Jack and Jill");
@@ -49,7 +50,7 @@ public class MovieController {
         for (int i = 0; i < num; i++){
             this.movies.add(fileNames.get(i));
         }
-        */
+        
     }
 
     public static MovieController getInstance(String filepath) {
@@ -108,7 +109,7 @@ public class MovieController {
         List<String> foundList = new ArrayList<String>();
         String otherQuery = null;
 
-        String thisQuery =  query.toLowerCase().replaceAll(" ", "_");
+        String thisQuery =  "_"+query.toLowerCase().replaceAll(" ", "_")+"_";
 
         if (query != null && !query.trim().equals("")) {
 

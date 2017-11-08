@@ -491,7 +491,7 @@ public class app extends javax.swing.JFrame  implements Observer{
     private void jToggleButton4ActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jToggleButton5ActionPerformed
         // add search code here
     	net.clearSearchResults();
-        String movie = jTextField5.getText().trim().replace(" ", "_");
+        String movie = jTextField5.getText();
         net.startSearch(movie);
         logger.info("Add Search code Here.......");
 
