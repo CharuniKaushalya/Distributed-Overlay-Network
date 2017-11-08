@@ -31,8 +31,8 @@ public class network extends Observable implements Observer {
 
 	private DatagramSocket socket;
 	private int receivedMessages, sentMessages, unAnsweredMessages;
-    private List<Integer> latencyArray = new ArrayList<>();
-    private List<Integer> hopArray = new ArrayList<>();
+	private List<Integer> latencyArray = new ArrayList<>();
+	private List<Integer> hopArray = new ArrayList<>();
 	private DecimalFormat formatter = new DecimalFormat("0000");
 
 	final private MovieController movieController = MovieController.getInstance("../../resources/File Names.txt");
@@ -96,7 +96,7 @@ public class network extends Observable implements Observer {
 		}
 		return true;
 	}
-	
+
 	public boolean leave_network(Node node) {
 		this.removeNeighbour(node);
 		String msg = config.LEAVEOK + " 0";
@@ -125,17 +125,45 @@ public class network extends Observable implements Observer {
 		result.setHops(0);
 		result.setTimestamp(query.getTimestamp());
 
-		for (Node peer : neighbours) {
+		List<Node> randoms = this.getRandom3nodes();
+		for (Node peer : randoms) {
 			searchRequest(peer, query);
+			System.out.println(peer.getPort_no());
 		}
-
 		searchResponce(query.getOriginNode(), result);
+	}
 
+	public List<Node> getRandom3nodes() {
+		if (neighbours.size() <= 3) {
+			return neighbours;
+		} else {
+			Random r = new Random();
+			int Low = 0;
+			int High = neighbours.size();
+			int random_1 = r.nextInt(High - Low) + Low;
+			int random_2 = r.nextInt(High - Low) + Low;
+			int random_3 = r.nextInt(High - Low) + Low;
+			while (random_1 == random_2) {
+				random_2 = r.nextInt(High - Low) + Low;
+			}
+			while (random_1 == random_3) {
+				random_3 = r.nextInt(High - Low) + Low;
+			}
+			while (random_2 == random_3) {
+				random_3 = r.nextInt(High - Low) + Low;
+			}
+
+			List<Node> randoms = new ArrayList<Node>();
+			randoms.add(neighbours.get(random_1));
+			randoms.add(neighbours.get(random_2));
+			randoms.add(neighbours.get(random_3));
+			return randoms;
+		}
 	}
 
 	public boolean searchRequest(Node peer, SearchQuery query) {
 		String msg = config.SER + " " + config.IP + " " + config.PORT + " " + query.getQueryText() + " "
-				+ query.getHops() +  " " + query.getTimestamp();
+				+ query.getHops() + " " + query.getTimestamp();
 		sender(msg, new Node(peer.getIP_address(), peer.getPort_no()));
 		return true;
 	}
@@ -149,10 +177,10 @@ public class network extends Observable implements Observer {
 		sender(msg, new Node(result.getOrginNode().getIP_address(), result.getOrginNode().getPort_no()));
 		return true;
 	}
-	
-	private boolean checkQueryList(SearchQuery query){
-		for ( SearchQuery q: searchQueryList ){
-			if(q.getQueryText().equals(query.getQueryText())){
+
+	private boolean checkQueryList(SearchQuery query) {
+		for (SearchQuery q : searchQueryList) {
+			if (q.getQueryText().equals(query.getQueryText())) {
 				return true;
 			}
 		}
@@ -287,7 +315,7 @@ public class network extends Observable implements Observer {
 			Node node = new Node(ip, port);
 			node.setStatus(status);
 			node.setUpdateTime(timeStamp);
-		
+
 			String joinokMsg = config.JOINOK + " 0";
 			sender(joinokMsg, node);
 			addNeighbour(node);
@@ -303,7 +331,7 @@ public class network extends Observable implements Observer {
 				logger.error("Error while adding new node to routing table");
 				break;
 			}
-			
+
 		} else if (config.LEAVE.equals(command)) {
 			String ip = tokenizer.nextToken();
 			int port = Integer.parseInt(tokenizer.nextToken());
@@ -327,9 +355,9 @@ public class network extends Observable implements Observer {
 			int port = Integer.parseInt(tokenizer.nextToken());
 			String query = tokenizer.nextToken();
 			int hops = Integer.parseInt(tokenizer.nextToken());
-			long timestamp 	= Long.parseLong(tokenizer.nextToken());
-			System.out.println("here come serch");
-			System.out.println(timestamp);
+			long timestamp = Long.parseLong(tokenizer.nextToken());
+			logger.info("here come serch");
+			logger.info(timestamp);
 
 			search(new SearchQuery(new Node(ip, port), query, hops, timestamp));
 
@@ -339,11 +367,10 @@ public class network extends Observable implements Observer {
 			int port = Integer.parseInt(tokenizer.nextToken());
 			int hops = Integer.parseInt(tokenizer.nextToken());
 			long timestamp = Long.parseLong(tokenizer.nextToken());
-			long latency = (System.currentTimeMillis() -timestamp);
+			long latency = (System.currentTimeMillis() - timestamp);
 
-
-            latencyArray.add((int) latency);
-            hopArray.add(hops);
+			latencyArray.add((int) latency);
+			hopArray.add(hops);
 
 			List<String> movies = new ArrayList<>();
 
@@ -353,38 +380,41 @@ public class network extends Observable implements Observer {
 			SearchResult result = new SearchResult(new Node(ip, port), movies, hops);
 			int moviesCount = no_files;
 			result.setMoviesCount(moviesCount);
-			if(moviesCount >0){
+			if (moviesCount > 0) {
 				this.searchResultList.add(result);
-				
+
 				logger.info(" Result : " + ++noOfLocalResults + "  [ Query = " + localQuerry + "]");
 				this.printSearchResults();
 			}
-//			String output = String.format("Number of movies: %d\nMovies: %s\nHops: %d\nSender %s:%d\n", moviesCount,
-//					result.getMovies().toString(), result.getHops(), result.getOrginNode().getIP_address(),
-//					result.getOrginNode().getPort_no());
-//			UpdateTheCMD(output);
+			// String output = String.format("Number of movies: %d\nMovies:
+			// %s\nHops: %d\nSender %s:%d\n", moviesCount,
+			// result.getMovies().toString(), result.getHops(),
+			// result.getOrginNode().getIP_address(),
+			// result.getOrginNode().getPort_no());
+			// UpdateTheCMD(output);
 
 		} else if (config.PING.equals(command)) {
 			String host = tokenizer.nextToken();
 			String hostport = tokenizer.nextToken();
-			Node temp = new Node(host, Integer.parseInt(hostport));					
+			Node temp = new Node(host, Integer.parseInt(hostport));
 			String pingMsg = config.PINGOK + " " + config.IP + " " + config.PORT;
-			sender(pingMsg,temp);
-			
-		}else if (config.PINGOK.equals(command)) {
+			sender(pingMsg, temp);
+
+		} else if (config.PINGOK.equals(command)) {
 			String host = tokenizer.nextToken();
 			String hostport = tokenizer.nextToken();
 			String hoststatus = "Active";
 			String hosttimeStamp = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(new Date());
 			Node temp = new Node(host, Integer.parseInt(hostport), hoststatus, hosttimeStamp);
-			//String joinMsg = config.JOIN + " " + config.IP + " " + config.PORT;
-			//sender(joinMsg, temp);
-			//addNeighbour(temp);
-			//System.out.println(neighbours.indexOf(new Node(host,Integer.parseInt(hostport))));
-			//Update the routing table
-			
-		}
-		else {
+			// String joinMsg = config.JOIN + " " + config.IP + " " +
+			// config.PORT;
+			// sender(joinMsg, temp);
+			// addNeighbour(temp);
+			// System.out.println(neighbours.indexOf(new
+			// Node(host,Integer.parseInt(hostport))));
+			// Update the routing table
+
+		} else {
 			unAnsweredMessages++;
 		}
 
@@ -395,17 +425,18 @@ public class network extends Observable implements Observer {
 			neighbours.add(node);
 		}
 	}
-	
+
 	private void removeNeighbour(Node node) {
-		for(Node neighbour : neighbours){
-			if (neighbour.getIP_address().equals(node.getIP_address()) && (neighbour.getPort_no() == node.getPort_no())){
+		for (Node neighbour : neighbours) {
+			if (neighbour.getIP_address().equals(node.getIP_address())
+					&& (neighbour.getPort_no() == node.getPort_no())) {
 				neighbours.remove(neighbour);
 				break;
 			}
 		}
 	}
-	
-	public void clearSearchResults(){
+
+	public void clearSearchResults() {
 		this.searchResultList = new ArrayList<SearchResult>();
 	}
 
@@ -415,11 +446,13 @@ public class network extends Observable implements Observer {
 		neighbours.forEach((a) -> printOnCMD(a.getIP_address() + ": " + a.getPort_no() + "\n"));
 		printOnCMD("***********************\n");
 	}
-	
+
 	public void printSearchResults() {
 		printOnCMD("\n***********************\nSearch Results\n***********************\n");
-		printOnCMD("Origin" + "\t\t" +"Hops" + "\t"+"MovieCount" + "\t"+ "Movies" +"\n");
-		searchResultList.forEach((a) -> printOnCMD(a.getOrginNode().getIP_address()+":"+a.getOrginNode().getPort_no() + "\t"+ a.getHops()+"\t" +a.getMoviesCount()+ "\t" +a.getMovies().toString() + "\n"));
+		printOnCMD("Origin" + "\t\t" + "Hops" + "\t" + "MovieCount" + "\t" + "Movies" + "\n");
+		searchResultList
+				.forEach((a) -> printOnCMD(a.getOrginNode().getIP_address() + ":" + a.getOrginNode().getPort_no() + "\t"
+						+ a.getHops() + "\t" + a.getMoviesCount() + "\t" + a.getMovies().toString() + "\n"));
 		printOnCMD("***********************\n");
 	}
 
@@ -458,29 +491,30 @@ public class network extends Observable implements Observer {
 		ConsoleTable ct = new ConsoleTable(headers, content);
 		printOnCMD("\n" + ct.printTable() + "\n");
 	}
+
 	public Statistics getStatistics() {
 		Statistics stat = new Statistics();
-		stat.setAnsweredMessages(receivedMessages- unAnsweredMessages);
-        stat.setSentMessages(sentMessages);
-        stat.setReceivedMessages(receivedMessages);
-        stat.setNodeDegree(neighbours.size());
-        if(latencyArray.size()>0){
-            double avg = latencyArray.stream().mapToLong(val -> val).average().getAsDouble();
-            stat.setLatencyMax(Collections.max(latencyArray));
-            stat.setLatencyMin(Collections.min(latencyArray));
-            stat.setLatencyAverage(avg);
-            stat.setLatencySD(Utils.getStandardDeviation(latencyArray.toArray(), avg));
-            stat.setNumberOfLatencies(latencyArray.size());
+		stat.setAnsweredMessages(receivedMessages - unAnsweredMessages);
+		stat.setSentMessages(sentMessages);
+		stat.setReceivedMessages(receivedMessages);
+		stat.setNodeDegree(neighbours.size());
+		if (latencyArray.size() > 0) {
+			double avg = latencyArray.stream().mapToLong(val -> val).average().getAsDouble();
+			stat.setLatencyMax(Collections.max(latencyArray));
+			stat.setLatencyMin(Collections.min(latencyArray));
+			stat.setLatencyAverage(avg);
+			stat.setLatencySD(Utils.getStandardDeviation(latencyArray.toArray(), avg));
+			stat.setNumberOfLatencies(latencyArray.size());
 
-            avg = hopArray.stream().mapToLong(val -> val).average().getAsDouble();
-            stat.setHopsMax(Collections.max(hopArray));
-            stat.setHopsMin(Collections.min(hopArray));
-            stat.setHopsAverage(avg);
-            stat.setHopsSD(Utils.getStandardDeviation(hopArray.toArray(), avg));
-            stat.setNumberOfHope(hopArray.size());
+			avg = hopArray.stream().mapToLong(val -> val).average().getAsDouble();
+			stat.setHopsMax(Collections.max(hopArray));
+			stat.setHopsMin(Collections.min(hopArray));
+			stat.setHopsAverage(avg);
+			stat.setHopsSD(Utils.getStandardDeviation(hopArray.toArray(), avg));
+			stat.setNumberOfHope(hopArray.size());
 
-        }
-        return stat;
+		}
+		return stat;
 	}
 
 	public void printStatistics(Statistics stat) {
@@ -489,17 +523,17 @@ public class network extends Observable implements Observer {
 		printOnCMD(stat.toString());
 		printOnCMD("***********************\n");
 
-		
 	}
-	
-    public void clearStats(){
-        receivedMessages=0;
-        sentMessages= 0;
-        unAnsweredMessages = 0;
-        latencyArray= new ArrayList<>();
-        hopArray = new ArrayList<>();
-        UpdateTheCMD("Statistics are cleared. ");
-    }
+
+	public void clearStats() {
+		receivedMessages = 0;
+		sentMessages = 0;
+		unAnsweredMessages = 0;
+		latencyArray = new ArrayList<>();
+		hopArray = new ArrayList<>();
+		UpdateTheCMD("Statistics are cleared. ");
+	}
+
 	@Override
 	public void update(Observable o, Object arg) {
 		// TODO Auto-generated method stub
