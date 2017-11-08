@@ -30,7 +30,6 @@ public class network extends Observable implements Observer {
 	final static private Logger logger = Logger.getLogger(network.class);
 
 	private DatagramSocket socket;
-	@SuppressWarnings("unused")
 	private int receivedMessages, sentMessages, unAnsweredMessages;
     private List<Integer> latencyArray = new ArrayList<>();
     private List<Integer> hopArray = new ArrayList<>();
