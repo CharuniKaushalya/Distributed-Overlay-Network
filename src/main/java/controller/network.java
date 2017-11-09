@@ -180,7 +180,8 @@ public class network extends Observable implements Observer {
 
 	public boolean searchRequest(Node peer, SearchQuery query) {
 		String msg = config.SER + " " + config.IP + " " + config.PORT + " " + query.getQueryText() + " "
-				+ query.getHops() + " " + query.getTimestamp();
+				+ query.getHops() + " " + query.getTimestamp() + " " + query.getOriginNode().getIP_address() + " "
+				+ query.getOriginNode().getPort_no();
 		sender(msg, new Node(peer.getIP_address(), peer.getPort_no()));
 		return true;
 	}
@@ -191,13 +192,13 @@ public class network extends Observable implements Observer {
 		for (String m : result.getMovies()) {
 			msg += " " + m;
 		}
-		sender(msg, new Node(result.getOrginNode().getIP_address(), result.getOrginNode().getPort_no()));
+		sender(msg, originNode);
 		return true;
 	}
 
 	private boolean checkQueryList(SearchQuery query) {
 		for (SearchQuery q : searchQueryList) {
-			if (q.getQueryText().equals(query.getQueryText()) && (q.getTimestamp()==query.getTimestamp())) {
+			if (q.getQueryText().equals(query.getQueryText()) && (q.getTimestamp() == query.getTimestamp())) {
 				return true;
 			}
 		}
@@ -379,10 +380,13 @@ public class network extends Observable implements Observer {
 			String query = tokenizer.nextToken();
 			int hops = Integer.parseInt(tokenizer.nextToken());
 			long timestamp = Long.parseLong(tokenizer.nextToken());
+			String origin_ip = tokenizer.nextToken();
+			int origin_port = Integer.parseInt(tokenizer.nextToken());
+			
 			logger.info("here come serch");
 			logger.info(timestamp);
 
-			search(new SearchQuery(new Node(ip, port), query, hops, timestamp));
+			search(new SearchQuery(new Node(origin_ip, origin_port),new Node(ip, port), query, hops, timestamp));
 
 		} else if (config.SEROK.equals(command)) {
 			int no_files = Integer.parseInt(tokenizer.nextToken());
