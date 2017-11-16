@@ -14,6 +14,7 @@ import javax.swing.AbstractListModel;
 import main.java.controller.MovieController;
 import main.java.model.config;
 import main.java.controller.network;
+import main.java.controller.QueryHandler;
 import main.java.controller.Utils;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
@@ -221,10 +222,15 @@ public class app extends javax.swing.JFrame  implements Observer{
 
         jButton1.setBackground(new java.awt.Color(0, 102, 0));
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Clear Status");
+        jButton1.setText("Clear & Summrize Stat");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                try {
+					jButton1ActionPerformed(evt);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
         });
 
@@ -239,7 +245,7 @@ public class app extends javax.swing.JFrame  implements Observer{
 
         jToggleButton3.setBackground(new java.awt.Color(0, 102, 0));
         jToggleButton3.setForeground(new java.awt.Color(255, 255, 255));
-        jToggleButton3.setText("Un Register");
+        jToggleButton3.setText("Request Stat");
         jToggleButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 unRegisterActionPerformed(evt);
@@ -424,14 +430,16 @@ public class app extends javax.swing.JFrame  implements Observer{
 
     private void unRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton3ActionPerformed
                 // add leave code here
-        logger.info("Add Leave code Here.......");
-        net.unRegister();
-        jTextArea1.append(config.USERNAME + "> send UNREG [" + Utils.getTimeStamp() + "]\n");
-        jToggleButton3.setEnabled(false);
+       // logger.info("Add Leave code Here.......");
+       // net.unRegister();
+       // jTextArea1.append(config.USERNAME + "> send UNREG [" + Utils.getTimeStamp() + "]\n");
+       // jToggleButton3.setEnabled(false);
+    	net.sendstat();
     }//GEN-LAST:event_jToggleButton3ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) throws IOException {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your clear status code
+    	net.getSummery();
     	net.clearStats();
     }//GEN-LAST:event_jButton1ActionPerformed
 

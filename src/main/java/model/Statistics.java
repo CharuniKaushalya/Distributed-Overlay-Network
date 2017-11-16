@@ -18,9 +18,32 @@ public class Statistics {
     private double hopsAverage=0;
     private int numberOfHope=0;
     private int numberOfLatencies =0;
+    private String sep = "#";
+    private String hops=",";
+    private String latencies =",";
     
     public Statistics() {
 
+    }
+    
+    public Statistics(String encodedStat){
+        String [] str = encodedStat.split(sep);
+        receivedMessages = Integer.parseInt(str[0]);
+        sentMessages = Integer.parseInt(str[1]);
+        answeredMessages = Integer.parseInt(str[2]);
+        latencyMin = Integer.parseInt(str[3]);
+        latencyMax = Integer.parseInt(str[4]);
+        latencySD = Double.parseDouble(str[5]);
+        latencyAverage = Double.parseDouble(str[6]);
+        numberOfLatencies = Integer.parseInt(str[7]);
+        hopsMin = Integer.parseInt(str[8]);
+        hopsMax = Integer.parseInt(str[9]);
+        hopsSD = Double.parseDouble(str[10]);
+        hopsAverage = Double.parseDouble(str[11]);
+        nodeDegree = Integer.parseInt(str[12]);
+        numberOfHope = Integer.parseInt(str[13]);
+        hops=str[14];
+        latencies=str[15];
     }
     
     public int getReceivedMessages() {
@@ -136,6 +159,22 @@ public class Statistics {
         this.hopsSD = hopsSD;
     }
     
+    public String getHops() {
+        return hops;
+    }
+
+    public void setHops(String hops) {
+        this.hops = hops;
+    }
+
+    public String getLatencies() {
+        return latencies;
+    }
+
+    public void setLatencies(String latencies) {
+        this.latencies = latencies;
+    }
+    
     public String toString() {
     	StringBuilder sb = new StringBuilder();
         sb.append("Forwarded Messages\t:"+sentMessages+"\n");
@@ -154,6 +193,25 @@ public class Statistics {
         sb.append("Hops SD\t\t:"+hopsSD+"\n");
     	return sb.toString();
     	
+    }
+    
+    public String toEncoded(){
+        return receivedMessages+sep+
+                sentMessages+sep+
+                answeredMessages+sep
+                +latencyMin+sep+
+                latencyMax+sep+
+                latencySD+sep+
+                latencyAverage+sep+
+                numberOfLatencies+sep
+                +hopsMin+sep+
+                hopsMax+sep+
+                hopsSD+sep+
+                hopsAverage+sep+
+                nodeDegree+sep+
+                numberOfHope+sep+
+                hops+sep+
+                latencies;
     }
     
 
