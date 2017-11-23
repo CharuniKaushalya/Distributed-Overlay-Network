@@ -440,7 +440,7 @@ public class app extends javax.swing.JFrame  implements Observer{
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) throws IOException {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your clear status code
     	net.getSummery();
-    	net.clearStats();
+    	//net.clearStats();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void RouteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RouteButtonActionPerformed
